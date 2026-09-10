@@ -24,7 +24,7 @@
 
         -> feature/account
             -> feature/account/login       Page login              /login
-            -> feature/account/forgot      Page mdp oublié         /forgot-password
+            -> feature/account/forgot      Page mdp oublié         /reset-password
             -> feature/account/register    Page créer un compte    /register
             -> feature/account/purchases   Page mes achats         /purchases          
 
