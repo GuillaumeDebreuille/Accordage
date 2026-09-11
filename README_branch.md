@@ -9,9 +9,9 @@
 
 
 
-        -> feature/templates
-            -> feature/template/header     Gestion du header
-            -> feature/template/footer     Gestion du footer
+        -> feature/layout
+            -> feature/layout/header     Gestion du header
+            -> feature/layout/footer     Gestion du footer
 
 
 
@@ -53,7 +53,7 @@
         -> feature/admin
             -> feature/admin/homeAdmin          Page Home admin                     /home-admin
             -> feature/admin/usersAdmin         Page modif des users                /users-admin
-            -> feature/admin/trainingsAdmin      Page modif/ajout/sup des forma      /trainings-admin
+            -> feature/admin/trainingsAdmin      Page modif/ajout/sup des forma     /trainings-admin
             -> feature/admin/productsAdmin      Page modif/ajout/sup des produits   /products-admin
 
 

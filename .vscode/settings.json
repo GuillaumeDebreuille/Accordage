@@ -1,0 +1,25 @@
+{
+    "folder-color.favoriteColors": [
+        "foldercolorizer.color_d7af5f",
+        "foldercolorizer.color_87d7af",
+        "foldercolorizer.color_5fffaf",
+        "foldercolorizer.color_ffafd7",
+        "foldercolorizer.color_af87d7",
+        "foldercolorizer.color_ff8787",
+        "foldercolorizer.color_d7d787"
+    ],
+    "folder-color.pathColors": [
+        {
+            "folderPath": "PRO01\\src\\Controller\\",
+            "isFolderOnly": true,
+            "color": "foldercolorizer.color_d7af5f",
+            "badge": "😊"
+        },
+        {
+            "folderPath": "PRO01\\templates\\",
+            "isFolderOnly": true,
+            "color": "foldercolorizer.color_d7af5f",
+            "badge": "😊"
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+
+<div class="header-zone">
+    <br>  {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+    {% if app.user %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+        {# Admin display #}
+        <h3>Admin !</h3>
+        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+
+
+        {% else %}
+            {% if app.user.verified %}
+            {# Logged-in user, email verified #}
+            <h3>Connecté et mail vérifié</h3>
+            <a href="{{ path('app_logout') }}">Se déconnecter</a>
+
+
+            {% else %}
+            {# Logged-in user, but email not verified #}
+            <h3>Connecté et mail non vérifié</h3>
+            <a href="{{ path('app_logout') }}">Se déconnecter</a>
+
+
+            {% endif %}
+        {% endif %}
+    {% else %}
+    {# Not logged in #}
+    <h3>non connecté !</h3>
+
+
+    {% endif %}
+<br><br><br> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+</div>
+
+
+<style>
+.header-zone {
+    background-color: #d5c8c8;
+}  
+body {
+    margin: 0;
+}
+</style>
