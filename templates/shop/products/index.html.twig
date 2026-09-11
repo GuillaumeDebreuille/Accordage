@@ -1,20 +1,17 @@
-{% extends 'base.html.twig' %}
+{% include 'layout/header.html.twig' %}
 
-{% block title %}Hello ProductsController!{% endblock %}
+<h1>Coucou</h1>
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% for product in products %}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+id : {{ product.id }} //
+name : {{ product.name }} // 
+category : {{ product.category }} // 
+description : {{ product.description }} // 
+prix : {{ product.price }}€ //
+stock : {{ product.stock }} //
+occasion ? : {{ product.isUsed }} // 
+image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+<br>
+{% endfor %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/laure/PRO01/src/Controller/ProductsController.php</code></li>
-        <li>Your template at <code>C:/Users/laure/PRO01/templates/products/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
