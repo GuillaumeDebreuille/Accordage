@@ -41,7 +41,7 @@
             -> feature/shop/products         Page de vente. basses guitares, autre      /products
             -> feature/shop/productDetails   Page pour le détail d'un produit avec id   /product/(id)
 
-            -> feature/shop/trainings        Page pour les leçons à vendre              /training
+            -> feature/shop/trainings        Page pour les leçons à vendre              /trainings
             -> feature/shop/trainingDetails  Page pour le détails d'une forma avec id   /training/(id)
 
             -> feature/shop/cart             Page panier                                /cart
@@ -53,7 +53,7 @@
         -> feature/admin
             -> feature/admin/homeAdmin          Page Home admin                     /home-admin
             -> feature/admin/usersAdmin         Page modif des users                /users-admin
-            -> feature/admin/trainingAdmin      Page modif/ajout/sup des forma      /training-admin
+            -> feature/admin/trainingsAdmin      Page modif/ajout/sup des forma      /trainings-admin
             -> feature/admin/productsAdmin      Page modif/ajout/sup des produits   /products-admin
 
 
