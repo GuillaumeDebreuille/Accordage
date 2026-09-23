@@ -35,8 +35,8 @@ class Lesson
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
-    #[ORM\Column]
-    private array $images = [];
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $images = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -131,12 +131,12 @@ class Lesson
         return $this;
     }
 
-    public function getImages(): array
+    public function getImages(): ?string
     {
         return $this->images;
     }
 
-    public function setImages(array $images): static
+    public function setImages(string $images): static
     {
         $this->images = $images;
 

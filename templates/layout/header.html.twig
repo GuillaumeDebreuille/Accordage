@@ -1,6 +1,6 @@
 
 <div class="header-zone">
-    <br>  {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+    <br><br> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
         {# Admin display #}
@@ -26,17 +26,17 @@
     {% else %}
     {# Not logged in #}
     <h3>non connecté !</h3>
+    <a href="{{ path('app_login') }}">Se Connecter</a>
 
 
     {% endif %}
 <br><br><br> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 </div>
 
-
 <style>
 .header-zone {
     background-color: #d5c8c8;
-}  
+    }  
 body {
     margin: 0;
 }
