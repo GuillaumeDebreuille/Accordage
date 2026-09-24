@@ -2,37 +2,65 @@
 
 <h1>Coucou</h1>
 
+{# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+<hr>
+<h3>Données des achats précédents (Phase de test)</h3>
+    <h4>tableau $purchasedlessons</h4>
+        {% for purchasedlesson in purchasedlessons %}
+        - id de la leçon : {{ purchasedlesson.lesson.id }} <br>
+        {% endfor %}
+
+    <h4>tableau $purchasedpacks</h4>
+        {% for purchasedpack in purchasedpacks %}
+        - id du pack : {{ purchasedpack.lessonPack.id }} <br>
+        {% endfor %}
+
+    <h4>tableau $purchasedlessonsinpacks</h4>
+        {% for purchasedlessonsinpack in purchasedlessonsinpacks %}
+        - id des leçons de pack(s) : {{ purchasedlessonsinpack.id }} <br>
+        {% endfor %}
+<hr>
+{# Fin zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{# Fin zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+{# Fin zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+
+
+
+
 
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
         {# Admin display #}
         <h3>Admin !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-<h2>Les packs : </h2>
-{% for lessonspack in lessonspacks %}
+            <h2>Les packs : </h2>
+            {% for lessonspack in lessonspacks %}
+                {% if lessonspack.id not in purchasedPackIds %}
 
-id : {{ lessonspack.id }} <br>
-name : {{ lessonspack.title }} <br>
-instrument : {{ lessonspack.instrument }} <br>
-description : {{ lessonspack.description }} <br>
-prix : {{ lessonspack.price }}€ <br>
-<button>Acheter le pack</button><br>
-<br>
+                    id : {{ lessonspack.id }} <br>
+                    name : {{ lessonspack.title }} <br>
+                    instrument : {{ lessonspack.instrument }} <br>
+                    description : {{ lessonspack.description }} <br>
+                    prix : {{ lessonspack.price }}€ <br>
+                    <button>Acheter le pack</button><br>
+                    <br>
+                {% endif %}
+            {% endfor %}
 
-{% endfor %}
-
-<h2>Les leçons : </h2>
-{% for lesson in lessons %}
-
-id : {{ lesson.id }} <br>
-name : {{ lesson.title }} <br>
-<img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-description : {{ lesson.description }} <br>
-prix : {{ lesson.price }}€ <br>
-<button>Acheter le cours</button><br>
-<br>
-
-{% endfor %}
+                <h2>Les leçons : </h2>
+                {% for lesson in lessons %}
+                    {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
+                        id : {{ lesson.id }} <br>
+                        name : {{ lesson.title }} <br>
+                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                        description : {{ lesson.description }} <br>
+                        prix : {{ lesson.price }}€ <br>
+                        <button>Acheter le cour</button><br>
+                        <br>
+                    {% endif %}
+                {% endfor %}
 
 
 
@@ -43,31 +71,32 @@ prix : {{ lesson.price }}€ <br>
             {# Logged-in user, email verified #}
             <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-<h2>Les packs : </h2>
-{% for lessonspack in lessonspacks %}
+            <h2>Les packs : </h2>
+            {% for lessonspack in lessonspacks %}
+                {% if lessonspack.id not in purchasedPackIds %}
 
-id : {{ lessonspack.id }} <br>
-name : {{ lessonspack.title }} <br>
-instrument : {{ lessonspack.instrument }} <br>
-description : {{ lessonspack.description }} <br>
-prix : {{ lessonspack.price }}€ <br>
-<button>Acheter le pack</button><br>
-<br>
+                    id : {{ lessonspack.id }} <br>
+                    name : {{ lessonspack.title }} <br>
+                    instrument : {{ lessonspack.instrument }} <br>
+                    description : {{ lessonspack.description }} <br>
+                    prix : {{ lessonspack.price }}€ <br>
+                    <button>Acheter le pack</button><br>
+                    <br>
+                {% endif %}
+            {% endfor %}
 
-{% endfor %}
-
-<h2>Les leçons : </h2>
-{% for lesson in lessons %}
-
-id : {{ lesson.id }} <br>
-name : {{ lesson.title }} <br>
-<img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-description : {{ lesson.description }} <br>
-prix : {{ lesson.price }}€ <br>
-<button>Acheter le cours</button><br>
-<br>
-
-{% endfor %}
+                <h2>Les leçons : </h2>
+                {% for lesson in lessons %}
+                    {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
+                        id : {{ lesson.id }} <br>
+                        name : {{ lesson.title }} <br>
+                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                        description : {{ lesson.description }} <br>
+                        prix : {{ lesson.price }}€ <br>
+                        <button>Acheter le cour</button><br>
+                        <br>
+                    {% endif %}
+                {% endfor %}
 
 
 
@@ -76,32 +105,27 @@ prix : {{ lesson.price }}€ <br>
             {% else %}
             {# Logged-in user, but email not verified #}
             <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
 
-<h2>Les packs : </h2>
-{% for lessonspack in lessonspacks %}
+                <h2>Les packs : </h2>
+                {% for lessonspack in lessonspacks %}
+                    id : {{ lessonspack.id }} <br>
+                    name : {{ lessonspack.title }} <br>
+                    instrument : {{ lessonspack.instrument }} <br>
+                    description : {{ lessonspack.description }} <br>
+                    prix : {{ lessonspack.price }}€ <br>
+                    <br>
+                {% endfor %}
 
-id : {{ lessonspack.id }} <br>
-name : {{ lessonspack.title }} <br>
-instrument : {{ lessonspack.instrument }} <br>
-description : {{ lessonspack.description }} <br>
-prix : {{ lessonspack.price }}€ <br>
-<button>Acheter le pack</button><br>
-<br>
-
-{% endfor %}
-
-<h2>Les leçons : </h2>
-{% for lesson in lessons %}
-
-id : {{ lesson.id }} <br>
-name : {{ lesson.title }} <br>
-<img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-description : {{ lesson.description }} <br>
-prix : {{ lesson.price }}€ <br>
-<button>Acheter le cours</button><br>
-<br>
-
-{% endfor %}
+                <h2>Les leçons : </h2>
+                    {% for lesson in lessons %}
+                    id : {{ lesson.id }} <br>
+                    name : {{ lesson.title }} <br>
+                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                    description : {{ lesson.description }} <br>
+                    prix : {{ lesson.price }}€ <br>
+                    <br>
+                {% endfor %}
 
 
 
@@ -112,33 +136,28 @@ prix : {{ lesson.price }}€ <br>
     {% else %}
     {# Not logged in #}
     <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+    <a href="{{ path('app_login') }}">Se Connecter</a>-<a href="{{ path('app_register') }}">Créer un comtpe</a><br>
 
-<h2>Les packs : </h2>
-{% for lessonspack in lessonspacks %}
 
-id : {{ lessonspack.id }} <br>
-name : {{ lessonspack.title }} <br>
-instrument : {{ lessonspack.instrument }} <br>
-description : {{ lessonspack.description }} <br>
-prix : {{ lessonspack.price }}€ <br>
-Pour acheter ce pack, merci de vous identifier.<br>
-<a href="{{ path('app_login') }}">Se Connecter</a><a href="{{ path('app_register') }}">Créer un comtpe</a><br>
-<br>
+        <h2>Les packs : </h2>
+        {% for lessonspack in lessonspacks %}
+            id : {{ lessonspack.id }} <br>
+            name : {{ lessonspack.title }} <br>
+            instrument : {{ lessonspack.instrument }} <br>
+            description : {{ lessonspack.description }} <br>
+            prix : {{ lessonspack.price }}€ <br>
+            <br>
+        {% endfor %}
 
-{% endfor %}
-
-<h2>Les leçons : </h2>
-{% for lesson in lessons %}
-
-id : {{ lesson.id }} <br>
-name : {{ lesson.title }} <br>
-<img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-description : {{ lesson.description }} <br>
-prix : {{ lesson.price }}€ <br>
-Pour acheter cette leçon, merci de vous identifier.<br>
-<a href="{{ path('app_login') }}">Se Connecter</a><a href="{{ path('app_register') }}">Créer un comtpe</a><br>
-<br>
-
-{% endfor %}
+        <h2>Les leçons : </h2>
+            {% for lesson in lessons %}
+            id : {{ lesson.id }} <br>
+            name : {{ lesson.title }} <br>
+            <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+            description : {{ lesson.description }} <br>
+            prix : {{ lesson.price }}€ <br>
+            <br>
+        {% endfor %}
 
     {% endif %}
