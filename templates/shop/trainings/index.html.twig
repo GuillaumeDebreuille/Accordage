@@ -37,7 +37,7 @@
 
             <h2>Les packs : </h2>
             {% for lessonspack in lessonspacks %}
-                {% if lessonspack.id not in purchasedPackIds %}
+                {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
 
                     id : {{ lessonspack.id }} <br>
                     name : {{ lessonspack.title }} <br>
@@ -73,7 +73,7 @@
 
             <h2>Les packs : </h2>
             {% for lessonspack in lessonspacks %}
-                {% if lessonspack.id not in purchasedPackIds %}
+                {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
 
                     id : {{ lessonspack.id }} <br>
                     name : {{ lessonspack.title }} <br>

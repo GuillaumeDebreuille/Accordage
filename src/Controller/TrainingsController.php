@@ -61,6 +61,10 @@ final class TrainingsController extends AbstractController
             fn ($purchase) => $purchase->getLessonPack()->getId(),
             $purchasedpacks
         );
+        $purchasedPackIdsFromLessons = array_map(
+            fn ($purchase) => $purchase->getLesson()->getLessonPack()->getId(),
+            $purchasedlessons
+        );
 
 
 
@@ -74,7 +78,8 @@ final class TrainingsController extends AbstractController
             'purchasedlessonsinpacks' => $purchasedlessonsinpacks,
             'purchasedLessonIds' => $purchasedLessonIds,
             'purchasedLessonsInPacksIds' => $purchasedLessonsInPacksIds,
-            'purchasedPackIds' => $purchasedPackIds
+            'purchasedPackIds' => $purchasedPackIds,
+            'purchasedPackIdsFromLessons' => $purchasedPackIdsFromLessons
         ]);
     }
 }

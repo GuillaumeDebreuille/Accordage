@@ -6,6 +6,7 @@
         {# Admin display #}
         <h3>Admin !</h3>
         <a href="{{ path('app_logout') }}">Se déconnecter</a>
+        <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
 
 
         {% else %}
@@ -13,12 +14,14 @@
             {# Logged-in user, email verified #}
             <h3>Connecté et mail vérifié</h3>
             <a href="{{ path('app_logout') }}">Se déconnecter</a>
+            <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
 
 
             {% else %}
             {# Logged-in user, but email not verified #}
             <h3>Connecté et mail non vérifié</h3>
             <a href="{{ path('app_logout') }}">Se déconnecter</a>
+            <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
 
 
             {% endif %}
@@ -27,6 +30,7 @@
     {# Not logged in #}
     <h3>non connecté !</h3>
     <a href="{{ path('app_login') }}">Se Connecter</a>
+    <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
 
 
     {% endif %}
