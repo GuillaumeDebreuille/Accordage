@@ -6,7 +6,6 @@
     name : {{ lesson.title }} <br>
     <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
     description : {{ lesson.description }} <br>
-    prix : {{ lesson.price }}€ <br>
-    button>Acheter le cour</button><br>
-    <br>
+    <a href="{{ path('app_course_details', { id: lesson.id }) }}">Voir la leçon</a>
+    <br><br>
 {% endfor %}
