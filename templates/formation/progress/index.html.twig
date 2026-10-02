@@ -1,20 +1,14 @@
-{% extends 'base.html.twig' %}
+{% include 'layout/header.html.twig' %}
 
-{% block title %}Hello ProgressController!{% endblock %}
+<h1>Mes succès</h1>
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/laure/PRO01/src/Controller/ProgressController.php</code></li>
-        <li>Your template at <code>C:/Users/laure/PRO01/templates/progress/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+{% for progress in progresses %}
+    {{ progress.lesson.title }} - terminée le {{ progress.createdAt|date('d/m/Y') }}
+    <form method="post" action="{{ path('app_progress_delete', { id: progress.id }) }}" style="display:inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete_progress_' ~ progress.id) }}">
+        <button type="submit">Retirer des succès</button>
+    </form>
+    <br>
+{% else %}
+    <p>Aucune leçon terminée pour le moment.</p>
+{% endfor %}

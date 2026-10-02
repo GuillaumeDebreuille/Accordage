@@ -155,7 +155,7 @@ $isCompleted = (bool) $progressrepository->findOneBy(['user' => $this->getUser()
                 $em->flush();
             }
     
-            return $this->redirectToRoute('app_courses');
+            return $this->redirectToRoute('app_progress');
         }
 
 
