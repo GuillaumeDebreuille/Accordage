@@ -4,3 +4,12 @@
 {{ lesson.title }}
 {{ lesson.content }}
 {{ lesson.description }}
+
+{% if not isCompleted %}
+    <form method="post" action="{{ path('app_course_complete', { id: lesson.id }) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('complete_lesson_' ~ lesson.id) }}">
+        <button type="submit">Terminer la leçon ?</button>
+    </form>
+{% else %}
+    <p>Leçon terminée</p>
+{% endif %}
