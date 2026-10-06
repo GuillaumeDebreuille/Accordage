@@ -3,7 +3,10 @@
 
 
 {% block body %}
-
+    {% for message in app.flashes('email_verification') %}
+        <p>{{ message }}</p>
+    {% endfor %}
+    
     <h1>Hello Home !</h1>
     <p>Test</p>
     
