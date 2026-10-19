@@ -8,16 +8,40 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\LessonRepository;
 use App\Repository\LessonPackRepository;
 use App\Repository\PurchaseLessonRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 final class TrainingsController extends AbstractController
 {
     #[Route('/trainings', name: 'app_trainings')]
-    public function index(LessonRepository $lessonrepository, LessonPackRepository $lessonpackrepository, PurchaseLessonRepository $purchaselessonrepository): Response
+    public function index(
+        Request $request,
+        LessonRepository $lessonrepository, 
+        LessonPackRepository $lessonpackrepository, 
+        PurchaseLessonRepository $purchaselessonrepository
+        ): Response
     {
 
-        $lessons = $lessonrepository->findAll();
-        $lessonspacks = $lessonpackrepository->findAll();
-        
+
+
+
+
+        // Retrieves filter query parameters and fetches filtered lessons and packs
+        $types = $request->query->all('types');
+        $instruments = $request->query->all('instruments');
+
+        $criteria = [];
+        if (!empty($instruments)) {
+            $criteria['instrument'] = $instruments;
+        }
+
+        $lessons = (empty($types) || in_array('lesson', $types)) 
+            ? $lessonrepository->findBy($criteria) 
+            : [];
+
+        $lessonspacks = (empty($types) || in_array('pack', $types)) 
+            ? $lessonpackrepository->findBy($criteria) 
+            : [];
+
 
 
 
@@ -65,6 +89,7 @@ final class TrainingsController extends AbstractController
             fn ($purchase) => $purchase->getLesson()->getLessonPack()->getId(),
             $purchasedlessons
         );
+
 
 
 

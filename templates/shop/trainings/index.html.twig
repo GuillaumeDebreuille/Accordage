@@ -1,7 +1,5 @@
 {% include 'layout/header.html.twig' %}
 
-<h1>Coucou</h1>
-
 {# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 {# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 {# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
@@ -30,6 +28,45 @@
 
 
 
+{# ----- start of the sorting system ----- #}
+
+{% set types = app.request.get('types', []) %}
+{% set instruments = app.request.get('instruments', []) %}
+
+
+
+<form method="get" action="{{ path('app_trainings') }}">
+
+{# 1/2 Types : Leçon / Pack #}
+    <label>
+        <input type="checkbox" name="types[]" value="lesson" onchange="this.form.submit()"
+            {{ 'lesson' in types ? 'checked' : '' }}> Leçons
+    </label>
+    <label>
+        <input type="checkbox" name="types[]" value="pack" onchange="this.form.submit()"
+            {{ 'pack' in types ? 'checked' : '' }}> Packs
+    </label>
+
+    <br>
+
+{# 2/2 Instruments : Guitare / Basse #}
+    <label>
+        <input type="checkbox" name="instruments[]" value="guitar" onchange="this.form.submit()"
+            {{ 'guitar' in instruments ? 'checked' : '' }}> Guitare
+    </label>
+    <label>
+        <input type="checkbox" name="instruments[]" value="bass" onchange="this.form.submit()"
+            {{ 'bass' in instruments ? 'checked' : '' }}> Basse
+    </label>
+
+</form>
+
+{# ----- end of the sorting system ----- #}
+
+
+
+
+
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
         {# Admin display #}
@@ -38,12 +75,15 @@
             <h2>Les packs : </h2>
             {% for lessonspack in lessonspacks %}
                 {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
-
-                    id : {{ lessonspack.id }} <br>
-                    name : {{ lessonspack.title }} <br>
-                    instrument : {{ lessonspack.instrument }} <br>
-                    description : {{ lessonspack.description }} <br>
-                    prix : {{ lessonspack.price }}€ <br>
+                    {{ lessonspack.title }} <br>
+                        {% if lessonspack.instrument == 'bass' %}
+                            Basse électrique <br>
+                        {% elseif lessonspack.instrument == 'guitar' %}
+                            Guitare électrique <br>
+                        {% endif %}
+                    {{ lessonspack.price }}€ <br>
+                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
                     <button>Acheter le pack</button><br>
                     <br>
                 {% endif %}
@@ -52,11 +92,11 @@
                 <h2>Les leçons : </h2>
                 {% for lesson in lessons %}
                     {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
-                        id : {{ lesson.id }} <br>
                         name : {{ lesson.title }} <br>
+                        instrument : {{ lesson.instrument }} <br>
                         <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                        description : {{ lesson.description }} <br>
                         prix : {{ lesson.price }}€ <br>
+                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
                         <button>Acheter le cour</button><br>
                         <br>
                     {% endif %}
@@ -74,12 +114,15 @@
             <h2>Les packs : </h2>
             {% for lessonspack in lessonspacks %}
                 {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
-
-                    id : {{ lessonspack.id }} <br>
-                    name : {{ lessonspack.title }} <br>
-                    instrument : {{ lessonspack.instrument }} <br>
-                    description : {{ lessonspack.description }} <br>
-                    prix : {{ lessonspack.price }}€ <br>
+                    {{ lessonspack.title }} <br>
+                        {% if lessonspack.instrument == 'bass' %}
+                            Basse électrique <br>
+                        {% elseif lessonspack.instrument == 'guitar' %}
+                            Guitare électrique <br>
+                        {% endif %}
+                    {{ lessonspack.price }}€ <br>
+                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
                     <button>Acheter le pack</button><br>
                     <br>
                 {% endif %}
@@ -88,11 +131,15 @@
                 <h2>Les leçons : </h2>
                 {% for lesson in lessons %}
                     {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
-                        id : {{ lesson.id }} <br>
-                        name : {{ lesson.title }} <br>
+                        {{ lesson.title }} <br>
+                            {% if lesson.instrument == 'bass' %}
+                                Basse électrique <br>
+                            {% elseif lesson.instrument == 'guitar' %}
+                                Guitare électrique <br>
+                            {% endif %}
                         <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                        description : {{ lesson.description }} <br>
-                        prix : {{ lesson.price }}€ <br>
+                        {{ lesson.price }}€ <br>
+                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
                         <button>Acheter le cour</button><br>
                         <br>
                     {% endif %}
@@ -109,22 +156,30 @@
 
                 <h2>Les packs : </h2>
                 {% for lessonspack in lessonspacks %}
-                    id : {{ lessonspack.id }} <br>
-                    name : {{ lessonspack.title }} <br>
-                    instrument : {{ lessonspack.instrument }} <br>
-                    description : {{ lessonspack.description }} <br>
-                    prix : {{ lessonspack.price }}€ <br>
+                    {{ lessonspack.title }} <br>
+                        {% if lessonspack.instrument == 'bass' %}
+                            Basse électrique <br>
+                        {% elseif lessonspack.instrument == 'guitar' %}
+                            Guitare électrique <br>
+                        {% endif %}
+                    {{ lessonspack.price }}€ <br>
+                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
                     <br>
                 {% endfor %}
 
                 <h2>Les leçons : </h2>
                     {% for lesson in lessons %}
-                    id : {{ lesson.id }} <br>
-                    name : {{ lesson.title }} <br>
-                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                    description : {{ lesson.description }} <br>
-                    prix : {{ lesson.price }}€ <br>
-                    <br>
+                        {{ lesson.title }} <br>
+                            {% if lesson.instrument == 'bass' %}
+                                Basse électrique <br>
+                            {% elseif lesson.instrument == 'guitar' %}
+                                Guitare électrique <br>
+                            {% endif %}
+                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                        {{ lesson.price }}€ <br>
+                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
+                        <br>
                 {% endfor %}
 
 
@@ -142,22 +197,30 @@
 
         <h2>Les packs : </h2>
         {% for lessonspack in lessonspacks %}
-            id : {{ lessonspack.id }} <br>
-            name : {{ lessonspack.title }} <br>
-            instrument : {{ lessonspack.instrument }} <br>
-            description : {{ lessonspack.description }} <br>
-            prix : {{ lessonspack.price }}€ <br>
+            {{ lessonspack.title }} <br>
+                {% if lessonspack.instrument == 'bass' %}
+                    Basse électrique <br>
+                {% elseif lessonspack.instrument == 'guitar' %}
+                    Guitare électrique <br>
+                {% endif %}
+            {{ lessonspack.price }}€ <br>
+            <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+            <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
             <br>
         {% endfor %}
 
         <h2>Les leçons : </h2>
             {% for lesson in lessons %}
-            id : {{ lesson.id }} <br>
-            name : {{ lesson.title }} <br>
-            <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-            description : {{ lesson.description }} <br>
-            prix : {{ lesson.price }}€ <br>
-            <br>
+                {{ lesson.title }} <br>
+                    {% if lesson.instrument == 'bass' %}
+                        Basse électrique <br>
+                    {% elseif lesson.instrument == 'guitar' %}
+                        Guitare électrique <br>
+                    {% endif %}
+                <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                {{ lesson.price }}€ <br>
+                <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
+                <br>
         {% endfor %}
 
     {% endif %}

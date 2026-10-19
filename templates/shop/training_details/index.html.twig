@@ -1,20 +1,86 @@
-{% extends 'base.html.twig' %}
+{% include 'layout/header.html.twig' %}
 
-{% block title %}Hello TrainingDetailsController!{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% if app.user %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+{# ------------------ Admin ------------------ #}
+        <h3>Admin !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/laure/PRO01/src/Controller/TrainingDetailsController.php</code></li>
-        <li>Your template at <code>C:/Users/laure/PRO01/templates/training_details/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+        id : {{ lesson.id }} <br>
+        name : {{ lesson.title }} <br>
+        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+        description : {{ lesson.description }} <br>
+        prix : {{ lesson.price }}€ <br>
+        <br>
+
+
+
+
+
+        {% else %}
+            {% if app.user.verified %}
+{# ------------------ Logged-in user, email verified ------------------ #}
+            <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+
+                {% if type == 'lesson' %}
+
+                    id : {{ lesson.id }} <br>
+                    name : {{ lesson.title }} <br>
+                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+                    description : {{ lesson.description }} <br>
+                    prix : {{ lesson.price }}€ <br>
+                    <br>
+
+                {% elseif type == 'pack' %}
+
+                    {% for lesson in lessons %}
+                    <li>
+                        <strong>{{ lesson.title }}</strong> - {{ lesson.price }}€
+                    </li>
+                    {% else %}
+                        <li>Aucune leçon dans ce pack pour le moment.</li>
+                    {% endfor %}
+
+                {% endif %}
+
+
+
+
+            {% else %}
+{# ------------------ Logged-in user, but email not verified ------------------ #}
+            <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+
+            id : {{ lesson.id }} <br>
+            name : {{ lesson.title }} <br>
+            <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+            description : {{ lesson.description }} <br>
+            prix : {{ lesson.price }}€ <br>
+            <br>
+
+
+
+
+
+            {% endif %}
+        {% endif %}
+    {% else %}
+{# ------------------ Not logged in ------------------ #}
+    <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+
+    id : {{ lesson.id }} <br>
+    name : {{ lesson.title }} <br>
+    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
+    description : {{ lesson.description }} <br>
+    prix : {{ lesson.price }}€ <br>
+    <br>
+
+
+
+
+
+    {% endif %}
+
+

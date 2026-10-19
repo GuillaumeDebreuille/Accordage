@@ -1,20 +1,64 @@
-{% extends 'base.html.twig' %}
+{% include 'layout/header.html.twig' %}
 
-{% block title %}Hello ProductDetailsController!{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% if app.user %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
+{# ------------------ Admin ------------------ #}
+        <h3>Admin !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/laure/PRO01/src/Controller/ProductDetailsController.php</code></li>
-        <li>Your template at <code>C:/Users/laure/PRO01/templates/product_details/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+
+
+
+
+        {% else %}
+            {% if app.user.verified %}
+{# ------------------ Logged-in user, email verified ------------------ #}
+            <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+
+            <h1>{{ product.name }}</h1>
+
+            <div>
+                <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:300px; height:300px; object-fit:contain;" alt="{{ product.name }}">
+            </div>
+
+            <ul>
+                <li><strong>ID :</strong> {{ product.id }}</li>
+                <li><strong>Catégorie :</strong> {{ product.category }}</li>
+                <li><strong>État :</strong> {{ product.isUsed ? 'Seconde main' : 'Neuf' }}</li>
+                <li><strong>Prix :</strong> {{ product.price }}€</li>
+                <li><strong>Stock :</strong> {{ product.stock }}</li>
+                <li><strong>Description :</strong> {{ product.description }}</li>
+            </ul>
+
+            <form action="{{ path('app_cart', {'id': product.id}) }}" method="post">
+                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                <button type="submit">Ajouter au panier</button>
+            </form>
+            <a href="{{ path('app_products') }}">← Retour à la liste</a>
+
+
+
+            {% else %}
+{# ------------------ Logged-in user, but email not verified ------------------ #}
+            <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+
+
+
+
+
+            {% endif %}
+        {% endif %}
+    {% else %}
+{# ------------------ Not logged in ------------------ #}
+    <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+
+
+
+
+
+    {% endif %}
+
+

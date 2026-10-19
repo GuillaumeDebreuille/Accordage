@@ -42,6 +42,9 @@ class Lesson
     #[ORM\JoinColumn(nullable: false)]
     private ?LessonPack $lessonPack = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $instrument = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -151,6 +154,18 @@ class Lesson
     public function setLessonPack(?LessonPack $lessonPack): static
     {
         $this->lessonPack = $lessonPack;
+
+        return $this;
+    }
+
+    public function getInstrument(): ?string
+    {
+        return $this->instrument;
+    }
+
+    public function setInstrument(string $instrument): static
+    {
+        $this->instrument = $instrument;
 
         return $this;
     }

@@ -28,8 +28,6 @@ final class ProgressController extends AbstractController
             : [];
 
 
-
-
         return $this->render('formation/progress/index.html.twig', [
             'controller_name' => 'ProgressController',
             'progresses' => $progresses,

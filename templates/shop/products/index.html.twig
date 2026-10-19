@@ -69,6 +69,7 @@
                     prix : {{ product.price }}€ 
                     stock : {{ product.stock }} 
                     image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                    <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                     <br>
                 {% endif %}
             {% endif %}
@@ -86,6 +87,7 @@
                     prix : {{ product.price }}€ 
                     stock : {{ product.stock }} 
                     image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                    <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                     <br>
                 {% endif %}
             {% endif %}
@@ -112,6 +114,7 @@
                         prix : {{ product.price }}€ 
                         stock : {{ product.stock }} 
                         image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                         <br>
                     {% endif %}
                 {% endif %}
@@ -129,6 +132,7 @@
                         prix : {{ product.price }}€ 
                         stock : {{ product.stock }} 
                         image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                         <br>
                     {% endif %}
                 {% endif %}
@@ -155,6 +159,7 @@
                         prix : {{ product.price }}€ 
                         stock : {{ product.stock }} 
                         image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                         <br>
                     {% endif %}
                 {% endif %}
@@ -172,6 +177,7 @@
                         prix : {{ product.price }}€ 
                         stock : {{ product.stock }}
                         image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                         <br>
                     {% endif %}
                 {% endif %}
@@ -201,6 +207,7 @@
                 prix : {{ product.price }}€
                 stock : {{ product.stock }}
                 image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                 <br>
             {% endif %}
             {% endif %}
@@ -218,6 +225,7 @@
                 prix : {{ product.price }}€
                 stock : {{ product.stock }}
                 image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
+                <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
                 <br>
             {% endif %}
         {% endif %}
