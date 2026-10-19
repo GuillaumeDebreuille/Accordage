@@ -9,7 +9,8 @@
         <a href="{{ path('app_logout') }}">Se déconnecter</a>
         <a href="{{ path('app_courses') }}">Mes cours</a>
         <a href="{{ path('app_progress') }}">Mes succès</a>
-        <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
+        <a href="{{ path('app_trainings') }}">Leçons 🧺</a>
+        <a href="{{ path('app_products') }}">Produits 🧺</a>
 
 
 
@@ -21,7 +22,9 @@
             <a href="{{ path('app_logout') }}">Se déconnecter</a>
             <a href="{{ path('app_courses') }}">Mes cours</a>
             <a href="{{ path('app_progress') }}">Mes succès</a>
-            <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
+            <a href="{{ path('app_trainings') }}">Leçons 🧺</a>
+            <a href="{{ path('app_products') }}">Produits 🧺</a>
+
 
 
             {% else %}
@@ -29,7 +32,8 @@
             <h3>Connecté et mail non vérifié</h3>
             <a href="{{ path('app_home') }}">Accueil</a>
             <a href="{{ path('app_logout') }}">Se déconnecter</a>
-            <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
+            <a href="{{ path('app_trainings') }}">Leçons 🧺</a>
+            <a href="{{ path('app_products') }}">Produits 🧺</a>
 
 
             {% endif %}
@@ -39,7 +43,8 @@
     <h3>non connecté !</h3>
     <a href="{{ path('app_home') }}">Accueil</a>
     <a href="{{ path('app_login') }}">Se Connecter</a>
-    <a href="{{ path('app_trainings') }}">Leçons à vendre</a>
+    <a href="{{ path('app_trainings') }}">Leçons 🧺</a>
+    <a href="{{ path('app_products') }}">Produits 🧺</a>
 
 
     {% endif %}
