@@ -27,6 +27,7 @@ final class TrainingDetailsController extends AbstractController
     $lessons = [];
 
 
+
     if ($type === 'lesson') {
         $lesson = $lessonrepository->find($id);
 
@@ -48,11 +49,13 @@ final class TrainingDetailsController extends AbstractController
     }
 
 
+
         return $this->render('shop/training_details/index.html.twig', [
             'controller_name' => 'TrainingDetailsController',
             'type' => $type,
             'lesson' => $lesson,
-            'lessons' => $lessons
+            'lessons' => $lessons,
+            'pack' => $pack
         ]);
     }
 }

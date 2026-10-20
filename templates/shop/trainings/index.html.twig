@@ -33,8 +33,6 @@
 {% set types = app.request.get('types', []) %}
 {% set instruments = app.request.get('instruments', []) %}
 
-
-
 <form method="get" action="{{ path('app_trainings') }}">
 
 {# 1/2 Types : Leçon / Pack #}
@@ -84,7 +82,11 @@
                     {{ lessonspack.price }}€ <br>
                     <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
                     <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
-                    <button>Acheter le pack</button><br>
+                    {# Button add to cart #}
+                    <form action="{{ path('app_cart', { type: 'pack', id: lessonspack.id }) }}" method="post">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                    </form>
                     <br>
                 {% endif %}
             {% endfor %}
@@ -97,7 +99,11 @@
                         <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
                         prix : {{ lesson.price }}€ <br>
                         <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
-                        <button>Acheter le cour</button><br>
+                        {# Button add to cart #}
+                        <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                        </form>
                         <br>
                     {% endif %}
                 {% endfor %}
@@ -123,7 +129,11 @@
                     {{ lessonspack.price }}€ <br>
                     <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
                     <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
-                    <button>Acheter le pack</button><br>
+                    {# Button add to cart #}
+                    <form action="{{ path('app_cart', { type: 'pack', id: lessonspack.id }) }}" method="post">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                    </form>
                     <br>
                 {% endif %}
             {% endfor %}
@@ -140,7 +150,11 @@
                         <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
                         {{ lesson.price }}€ <br>
                         <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
-                        <button>Acheter le cour</button><br>
+                        {# Button add to cart #}
+                        <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                        </form>
                         <br>
                     {% endif %}
                 {% endfor %}
