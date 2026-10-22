@@ -7,6 +7,45 @@
 {# ------------------ Admin ------------------ #}
         <h3>Admin !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
+            <h1>{{ product.name }}</h1>
+            <div>
+                <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:300px; height:300px; object-fit:contain;" alt="{{ product.name }}">
+            </div>
+            <div>Catégorie :</strong> {{ product.category }}</div>
+            <div>État :</strong> {{ product.isUsed ? 'Seconde main' : 'Neuf' }}</div>
+            <div>Prix :</strong> {{ product.price }}€</div>
+            <div>Stock :</strong> {{ product.stock }}</div>
+            <div>Description :</strong> {{ product.description }}</div>
+            <a href="{{ path('app_products') }}">← Retour à la liste</a>
+
+            {# Start of button "add to cart" #}
+            {% set isUsed = product.isUsed %} {# Adapte la propriété selon ton entité (ex: product.state == 'used') #}
+            {% set itemType = isUsed ? 'product_used' : 'product_new' %}
+            {% if isUsed %}
+            {# used product, quantity 1 #}
+                <form action="{{ path('app_cart', { type: itemType, id: product.id }) }}" method="post">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn-primary">Ajouter l'article d'occasion</button>
+                </form>
+            {% else %}
+            {# new product, quantity selectable subject to stock availability #}
+                {% if product.stock > 0 %}
+                    <form action="{{ path('app_cart', { type: itemType, id: product.id }) }}" method="post">
+                        <label for="quantity_{{ product.id }}">Quantité :</label>
+                        <select name="quantity" id="quantity_{{ product.id }}">
+                            {% for i in 1..product.stock %}
+                                <option value="{{ i }}">{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                    </form>
+                {% else %}
+                    <button class="btn btn-secondary" disabled>Rupture de stock</button>
+                {% endif %}
+            {% endif %}
+            {# End of button "add to cart" #}
+
+
 
 
 
@@ -14,35 +53,68 @@
         {% else %}
             {% if app.user.verified %}
 {# ------------------ Logged-in user, email verified ------------------ #}
-            <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+                <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-            <h1>{{ product.name }}</h1>
 
-            <div>
-                <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:300px; height:300px; object-fit:contain;" alt="{{ product.name }}">
-            </div>
+                <h1>{{ product.name }}</h1>
+                <div>
+                    <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:300px; height:300px; object-fit:contain;" alt="{{ product.name }}">
+                </div>
+                <div>Catégorie :</strong> {{ product.category }}</div>
+                <div>État :</strong> {{ product.isUsed ? 'Seconde main' : 'Neuf' }}</div>
+                <div>Prix :</strong> {{ product.price }}€</div>
+                <div>Stock :</strong> {{ product.stock }}</div>
+                <div>Description :</strong> {{ product.description }}</div>
+                <a href="{{ path('app_products') }}">← Retour à la liste</a>
 
-            <ul>
-                <li><strong>ID :</strong> {{ product.id }}</li>
-                <li><strong>Catégorie :</strong> {{ product.category }}</li>
-                <li><strong>État :</strong> {{ product.isUsed ? 'Seconde main' : 'Neuf' }}</li>
-                <li><strong>Prix :</strong> {{ product.price }}€</li>
-                <li><strong>Stock :</strong> {{ product.stock }}</li>
-                <li><strong>Description :</strong> {{ product.description }}</li>
-            </ul>
+                {# Start of button "add to cart" #}
+                {% set isUsed = product.isUsed %} {# Adapte la propriété selon ton entité (ex: product.state == 'used') #}
+                {% set itemType = isUsed ? 'product_used' : 'product_new' %}
+                {% if isUsed %}
+                {# used product, quantity 1 #}
+                    <form action="{{ path('app_cart', { type: itemType, id: product.id }) }}" method="post">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary">Ajouter l'article d'occasion</button>
+                    </form>
+                {% else %}
+                {# new product, quantity selectable subject to stock availability #}
+                    {% if product.stock > 0 %}
+                        <form action="{{ path('app_cart', { type: itemType, id: product.id }) }}" method="post">
+                            <label for="quantity_{{ product.id }}">Quantité :</label>
+                            <select name="quantity" id="quantity_{{ product.id }}">
+                                {% for i in 1..product.stock %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-secondary" disabled>Rupture de stock</button>
+                    {% endif %}
+                {% endif %}
+                {# End of button "add to cart" #}
 
-            <form action="{{ path('app_cart', {'id': product.id}) }}" method="post">
-                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
-                <button type="submit">Ajouter au panier</button>
-            </form>
-            <a href="{{ path('app_products') }}">← Retour à la liste</a>
+
+
 
 
 
             {% else %}
 {# ------------------ Logged-in user, but email not verified ------------------ #}
-            <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+                <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+                <h3>Pour acheter un produit, merci de vérifier votre adresse mail.</h3>
+
+                <h1>{{ product.name }}</h1>
+                <div>
+                    <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:300px; height:300px; object-fit:contain;" alt="{{ product.name }}">
+                </div>
+                <div>Catégorie :</strong> {{ product.category }}</div>
+                <div>État :</strong> {{ product.isUsed ? 'Seconde main' : 'Neuf' }}</div>
+                <div>Prix :</strong> {{ product.price }}€</div>
+                <div>Stock :</strong> {{ product.stock }}</div>
+                <div>Description :</strong> {{ product.description }}</div>
+                <a href="{{ path('app_products') }}">← Retour à la liste</a>
+
 
 
 
@@ -52,12 +124,19 @@
         {% endif %}
     {% else %}
 {# ------------------ Not logged in ------------------ #}
-    <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+        <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+        <h3>Pour acheter un produit, merci de vous identifier</h3>
 
-
-
-
+        <h1>{{ product.name }}</h1>
+        <div>
+            <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:300px; height:300px; object-fit:contain;" alt="{{ product.name }}">
+        </div>
+        <div>Catégorie :</strong> {{ product.category }}</div>
+        <div>État :</strong> {{ product.isUsed ? 'Seconde main' : 'Neuf' }}</div>
+        <div>Prix :</strong> {{ product.price }}€</div>
+        <div>Stock :</strong> {{ product.stock }}</div>
+        <div>Description :</strong> {{ product.description }}</div>
+        <a href="{{ path('app_products') }}">← Retour à la liste</a>
 
     {% endif %}
 
