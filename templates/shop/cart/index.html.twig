@@ -1,20 +1,31 @@
-{% extends 'base.html.twig' %}
+{% include 'layout/header.html.twig' %}
 
-{% block title %}Hello CartController!{% endblock %}
+{% if cartData is empty %}
+    <p>Ton panier est vide.</p>
+{% else %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    {% for item in cartData %}
+    id : {{ item.element.id }} <br>
+    name : {{ item.element.name ?? item.element.title }} <br>
+    type : {{ item.type }} <br>
+    quantity : {{ item.quantity }} <br>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% if item.type in ['product_new', 'product_used'] %}
+        <form action="{{ path('app_cart', { type: item.type, id: item.element.id, action: 'update_quantity' }) }}" method="POST">
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.element.stock }}">
+            <button type="submit">Modifier la quantité</button>
+            <span>(Max : {{ item.element.stock }})</span>
+        </form>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/laure/PRO01/src/Controller/CartController.php</code></li>
-        <li>Your template at <code>C:/Users/laure/PRO01/templates/cart/index.html.twig</code></li>
-    </ul>
-</div>
-{% endblock %}
+        {% if item.quantity >= item.element.stock %}
+            stock max <br>
+        {% endif %}
+    {% endif %}
+
+    <form action="{{ path('app_cart', { type: item.type, id: item.element.id, action: 'remove' }) }}" method="POST">
+        <button type="submit">Supprimer</button>
+    </form>
+    <br>
+    {% endfor %}
+
+{% endif %}
