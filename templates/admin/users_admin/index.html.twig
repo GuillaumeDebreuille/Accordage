@@ -1,20 +1,103 @@
-{% extends 'base.html.twig' %}
+{% include 'layout/header.html.twig' %}
 
-{% block title %}Hello UsersAdminController!{% endblock %}
+<a href="{{ path('app_home_admin') }}">Retour</a>
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/laure/PRO01/src/Controller/UsersAdminController.php</code></li>
-        <li>Your template at <code>C:/Users/laure/PRO01/templates/users_admin/index.html.twig</code></li>
-    </ul>
+<div>
+    <input type="text" id="searchName" placeholder="Rechercher par Nom..." onkeyup="filterTable()">
+    <input type="text" id="searchFirstName" placeholder="Rechercher par Prénom..." onkeyup="filterTable()">
+    <input type="text" id="searchEmail" placeholder="Rechercher par Email..." onkeyup="filterTable()">
+    <input type="text" id="searchPhone" placeholder="Rechercher par Téléphone..." onkeyup="filterTable()">
 </div>
-{% endblock %}
+
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Rôles</th>
+            <th>Nouveau mot de passe</th>
+            <th>Vérifié ?</th>
+            <th>Créé le</th>
+            <th>Mis à jour le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <form action="{{ path('app_users_admin_edit', {id: user.id}) }}" method="POST">
+                    <td>{{ user.id }}</td>
+                    <td><input type="text" name="name" value="{{ user.name }}"></td>
+                    <td><input type="text" name="firstName" value="{{ user.firstName }}"></td>
+                    <td><input type="email" name="email" value="{{ user.email }}"></td>
+                    <td><input type="text" name="phone" value="{{ user.phone }}"></td>
+                    <td>{{ user.roles|join(', ') }}</td>
+                    <td><input type="password" name="plainPassword" placeholder="Laisser vide pour ne pas changer"></td>
+                    <td>
+                        <input type="checkbox" name="verified" value="1" {{ user.verified ? 'checked' : '' }}>
+                    </td>
+                    <td>{{ user.createdAt|date('d/m/Y H:i') }}</td>
+                    <td>{{ user.updatedAt|date('d/m/Y H:i') }}</td>
+                    <td>
+                        <button type="submit">Enregistrer</button>
+                    </td>
+                </form>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">Aucun utilisateur trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include 'layout/footer.html.twig' %}
+
+
+
+
+<script>
+// ---------- start of the search function ----------
+
+function filterTable() {
+    // Retrieving the value entered in the field
+    const searchName = document.getElementById('searchName').value.toLowerCase();
+    const searchFirstName = document.getElementById('searchFirstName').value.toLowerCase();
+    const searchEmail = document.getElementById('searchEmail').value.toLowerCase();
+    const searchPhone = document.getElementById('searchPhone').value.toLowerCase();
+
+    // Selection of all rows (tr)
+    const rows = document.querySelectorAll('table tbody tr');
+
+    // Loop through each row of the table one by one
+    rows.forEach(row => {
+        // Retrieves the field value
+        const nameInput = row.querySelector('input[name="name"]')?.value.toLowerCase() || '';
+        const firstNameInput = row.querySelector('input[name="firstName"]')?.value.toLowerCase() || '';
+        const emailInput = row.querySelector('input[name="email"]')?.value.toLowerCase() || '';
+        const phoneInput = row.querySelector('input[name="phone"]')?.value.toLowerCase() || '';
+
+        // Check if it is contained within the input value
+        const matchName = nameInput.includes(searchName);
+        const matchFirstName = firstNameInput.includes(searchFirstName);
+        const matchEmail = emailInput.includes(searchEmail);
+        const matchPhone = phoneInput.includes(searchPhone);
+
+        // If the row matches ALL search criteria simultaneously
+        if (matchName && matchFirstName && matchEmail && matchPhone) {
+            // Displays the line normally
+            row.style.display = '';
+        } else {
+            // Hides the table row
+            row.style.display = 'none';
+        }
+    });
+}
+
+// ---------- end of the search function ----------
+</script>
