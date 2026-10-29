@@ -4,11 +4,15 @@
     <p>Ton panier est vide.</p>
 {% else %}
 
+    {% set total = 0 %}
+
     {% for item in cartData %}
+    {% set total = total + (item.element.price * item.quantity) %}
     id : {{ item.element.id }} <br>
     name : {{ item.element.name ?? item.element.title }} <br>
     type : {{ item.type }} <br>
     quantity : {{ item.quantity }} <br>
+    prix : {{ item.element.price }} € <br>
 
     {% if item.type in ['product_new', 'product_used'] %}
         <form action="{{ path('app_cart', { type: item.type, id: item.element.id, action: 'update_quantity' }) }}" method="POST">
@@ -27,5 +31,12 @@
     </form>
     <br>
     {% endfor %}
+
+    <hr>
+    <h3>Total général : {{ total }} €</h3>
+
+    <form action="{{ path('app_stripe_checkout') }}" method="POST">
+        <button type="submit">Commander avec Stripe</button>
+    </form>
 
 {% endif %}
