@@ -2,8 +2,79 @@
 
 <a href="{{ path('app_home_admin') }}">Retour</a>
 
+<h1>Gestion des Produits</h1>
 
+<!-- Barre de recherche -->
+<div style="margin-bottom: 15px;">
+    <input type="text" id="searchInput" placeholder="Rechercher un produit..." onkeyup="filterTable()" style="padding: 5px; width: 300px;">
+</div>
 
-
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>Prix (€)</th>
+            <th>Stock</th>
+            <th>Occasion ?</th>
+            <th>Images</th>
+            <th>Créé le</th>
+            <th>Mis à jour le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+            <tr>
+                <td>
+                    {{ product.id }}
+                    <!-- Form linked via the attribute form="..." -->
+                    <form id="form-product-{{ product.id }}" action="{{ path('app_products_admin_edit', {id: product.id}) }}" method="POST"></form>
+                </td>
+                <td><input type="text" name="name" value="{{ product.name }}" form="form-product-{{ product.id }}"></td>
+                <td>
+                    <select name="category" form="form-product-{{ product.id }}">
+                        <option value="guitar" {{ product.category == 'guitar' ? 'selected' : '' }}>Guitar</option>
+                        <option value="bass" {{ product.category == 'bass' ? 'selected' : '' }}>Bass</option>
+                        <option value="other" {{ product.category == 'other' ? 'selected' : '' }}>Other</option>
+                    </select>
+                </td>
+                <td><textarea name="description" form="form-product-{{ product.id }}">{{ product.description }}</textarea></td>
+                <td><input type="number" step="0.01" name="price" value="{{ product.price }}" form="form-product-{{ product.id }}"></td>
+                <td><input type="number" name="stock" value="{{ product.stock }}" form="form-product-{{ product.id }}"></td>
+                <td>
+                    <input type="checkbox" name="isUsed" value="1" {{ product.isUsed ? 'checked' : '' }} form="form-product-{{ product.id }}">
+                </td>
+                <td><input type="text" name="images" value="{{ product.images is iterable ? product.images|json_encode : product.images }}" form="form-product-{{ product.id }}"></td>
+                <td>{{ product.createdAt|date('d/m/Y H:i') }}</td>
+                <td>{{ product.updatedAt ? product.updatedAt|date('d/m/Y H:i') : '-' }}</td>
+                <td>
+                    <button type="submit" form="form-product-{{ product.id }}">Enregistrer</button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">Aucun produit trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% include 'layout/footer.html.twig' %}
+
+<script>
+function filterTable() {
+    const filter = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('table tbody tr');
+
+    rows.forEach(row => {
+        const nameInput = row.querySelector('input[name="name"]');
+        if (nameInput) {
+            const nameValue = nameInput.value.toLowerCase();
+            row.style.display = nameValue.includes(filter) ? '' : 'none';
+        }
+    });
+}
+</script>

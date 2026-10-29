@@ -2,8 +2,114 @@
 
 <a href="{{ path('app_home_admin') }}">Retour</a>
 
+<h1>Gestion des Formations (Leçons & Packs)</h1>
 
+<h2>Ajouter un Pack</h2>
+<form action="{{ path('app_pack_admin_add') }}" method="POST">
+    <input type="text" name="title" placeholder="Titre du pack" required>
+    <textarea name="description" placeholder="Description"></textarea>
+    <input type="number" step="0.01" name="price" placeholder="Prix" required>
+    <input type="text" name="image" placeholder="Nom image (ex: pack1.jpg)">
+    <select name="instrument">
+        <option value="guitar">Guitar</option>
+        <option value="bass">Bass</option>
+    </select>
+    <button type="submit">Créer le pack</button>
+</form>
 
+<h2>Liste des Packs</h2>
+<table border="1">
+    <thead>
+        <tr><th>ID</th><th>Titre</th><th>Instrument</th><th>Prix</th><th>Image</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        {% for pack in packs %}
+            <tr>
+                <td>
+                    {{ pack.id }}
+                    <form id="form-pack-{{ pack.id }}" action="{{ path('app_pack_admin_edit', {id: pack.id}) }}" method="POST"></form>
+                </td>
+                <td><input type="text" name="title" value="{{ pack.title }}" form="form-pack-{{ pack.id }}"></td>
+                <td>
+                    <select name="instrument" form="form-pack-{{ pack.id }}">
+                        <option value="guitar" {{ pack.instrument == 'guitar' ? 'selected' : '' }}>Guitar</option>
+                        <option value="bass" {{ pack.instrument == 'bass' ? 'selected' : '' }}>Bass</option>
+                    </select>
+                </td>
+                <td><input type="number" step="0.01" name="price" value="{{ pack.price }}" form="form-pack-{{ pack.id }}"></td>
+                <td><input type="text" name="image" value="{{ pack.image }}" form="form-pack-{{ pack.id }}"></td>
+                <td>
+                    <button type="submit" form="form-pack-{{ pack.id }}">Enregistrer</button>
+                    <form action="{{ path('app_pack_admin_delete', {id: pack.id}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer la suppression ?');">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
+<hr>
+
+<h2>Ajouter une Leçon</h2>
+<form action="{{ path('app_lesson_admin_add') }}" method="POST">
+    <input type="text" name="title" placeholder="Titre de la leçon" required>
+    <textarea name="content" placeholder="Contenu"></textarea>
+    <input type="text" name="video_url" placeholder="URL Vidéo">
+    <textarea name="description" placeholder="Description"></textarea>
+    <input type="number" step="0.01" name="price" placeholder="Prix" required>
+    <input type="text" name="images" placeholder="Image (ex: lesson1.jpg)">
+    <select name="instrument">
+        <option value="guitar">Guitar</option>
+        <option value="bass">Bass</option>
+    </select>
+    <select name="lesson_pack_id">
+        <option value="">-- Aucun Pack (Indépendant) --</option>
+        {% for pack in packs %}
+            <option value="{{ pack.id }}">{{ pack.title }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Créer la leçon</button>
+</form>
+
+<h2>Liste des Leçons</h2>
+<table border="1">
+    <thead>
+        <tr><th>ID</th><th>Titre</th><th>Instrument</th><th>Pack</th><th>Prix</th><th>Image</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+            <tr>
+                <td>
+                    {{ lesson.id }}
+                    <form id="form-lesson-{{ lesson.id }}" action="{{ path('app_lesson_admin_edit', {id: lesson.id}) }}" method="POST"></form>
+                </td>
+                <td><input type="text" name="title" value="{{ lesson.title }}" form="form-lesson-{{ lesson.id }}"></td>
+                <td>
+                    <select name="instrument" form="form-lesson-{{ lesson.id }}">
+                        <option value="guitar" {{ lesson.instrument == 'guitar' ? 'selected' : '' }}>Guitar</option>
+                        <option value="bass" {{ lesson.instrument == 'bass' ? 'selected' : '' }}>Bass</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="lesson_pack_id" form="form-lesson-{{ lesson.id }}">
+                        <option value="">-- Aucun --</option>
+                        {% for pack in packs %}
+                            <option value="{{ pack.id }}" {{ lesson.lessonPack and lesson.lessonPack.id == pack.id ? 'selected' : '' }}>{{ pack.title }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="number" step="0.01" name="price" value="{{ lesson.price }}" form="form-lesson-{{ lesson.id }}"></td>
+                <td><input type="text" name="images" value="{{ lesson.images }}" form="form-lesson-{{ lesson.id }}"></td>
+                <td>
+                    <button type="submit" form="form-lesson-{{ lesson.id }}">Enregistrer</button>
+                    <form action="{{ path('app_lesson_admin_delete', {id: lesson.id}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer la suppression ?');">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% include 'layout/footer.html.twig' %}
