@@ -10,7 +10,6 @@ User 1 (mail non vérifié):
 
 
 User 1 (mail vérifié):
-    id : 3
     Email : test2@gmail.com
     Name : Deb2
     Fisrt name : Gui2

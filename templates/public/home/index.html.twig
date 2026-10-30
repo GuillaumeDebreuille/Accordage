@@ -1,7 +1,173 @@
-{% include 'layout/header.html.twig' %}
-{% for message in app.flashes('error') %}<script>alert("{{ message }}");</script>{% endfor %}
+{% extends 'base.html.twig' %}
+{% block title %}Accueil - Cours & Matériel de Musique{% endblock %}
+
+{% block body %}
+<div class="container my-5">
 
 
 
+    {# introduction #}
+    <section class="intro-block p-4 p-md-5 mb-5 rounded-3 shadow-sm">
+        <h2 class="section-title mb-3">Bienvenue chez Accordage</h2>
+        <p>
+            Nous sommes deux passionnés de musique, l’un guitariste et l’autre bassiste.
+            Ensemble, nous avons créé une boutique à taille humaine pour partager notre
+            passion et accompagner les musiciens dans leur pratique.
+        </p>
+        <p>
+            Vous y trouverez des guitares, des basses et des accessoires, neufs ou
+            d’occasion, ainsi que des cours en ligne pour progresser à votre rythme.
+            Leçons à l’unité ou packs thématiques, chacun peut choisir selon ses envies
+            et son niveau.
+        </p>
+        <p class="mb-0">
+            Notre objectif est simple : vous aider à trouver le bon instrument et à
+            prendre plaisir à jouer.
+        </p>
+    </section>
 
-{% include 'layout/footer.html.twig' %}
+
+
+    {# Hero Banner #}
+    <section class="hero-banner p-5 mb-5 rounded-3 text-center shadow">
+        <h1 class="display-5 fw-bold">Apprenez la Guitare &amp; la Basse</h1>
+        <p class="fs-4">Vidéos à l'unité, packs thématiques et boutique de matériel neuf &amp; d'occasion.</p>
+        <a href="{{ path('app_trainings') }}" class="btn btn-outline btn-lg me-2">Voir les Cours</a>
+        <a href="{{ path('app_products') }}" class="btn btn-outline btn-lg">Visiter la Boutique</a>
+    </section>
+
+
+
+    {# Courses & Packs Section #}
+    <h2 class="section-title mb-4">Nos Cours &amp; Packs</h2>
+    <img src="{{ asset('uploads/website/guitar_course.jpg') }}" alt="Un guitariste suivant un cours" class="section-image img-fluid w-100 object-fit-cover rounded-3 shadow mb-4" loading="lazy">
+    <div class="row mb-5">
+        <div class="col-md-6 mb-3">
+            <div class="card music-card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Packs Thématiques (ex: Pack Métal)</h5>
+                    <p class="card-text">Regroupe plusieurs leçons pour progresser rapidement sur un style précis.</p>
+                    <a href="{{ path('app_trainings') }}" class="card-link-custom stretched-link">Découvrir les packs</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card music-card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Leçons à l'unité</h5>
+                    <p class="card-text">Achetez uniquement les cours dont vous avez besoin.</p>
+                    <a href="{{ path('app_trainings') }}" class="card-link-custom stretched-link">Voir les leçons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {# Shop Section #}
+    <h2 class="section-title mb-4">Boutique &amp; Occasions</h2>
+    <img src="{{ asset('uploads/website/guitar_shop.jpg') }}" alt="Guitares exposées dans la boutique" class="section-image img-fluid w-100 object-fit-cover rounded-3 shadow mb-4" loading="lazy">
+    <div class="row mb-5">
+        <div class="col-md-6 mb-3">
+            <div class="card music-card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Matériel Neuf</h5>
+                    <p class="card-text">Guitares, basses, cordes et accessoires.</p>
+                    <a href="{{ path('app_products') }}" class="card-link-custom stretched-link">Voir les produits</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card music-card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Coin Occasion</h5>
+                    <p class="card-text">Guitares et basses d'occasion révisées par nos soins.</p>
+                    <a href="{{ path('app_products') }}" class="card-link-custom stretched-link">Voir les occasions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+{% endblock %}
+
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+
+
+        /* Introduction */
+        .intro-block {
+            background-color: #fffaf3;
+            border-bottom: 5px solid #D6A756;
+        }
+        .intro-block p {
+            line-height: 1.7;
+        }
+
+
+        /* Hero */
+        .hero-banner {
+            background-color: #2E1F1A;
+            color: #F3E9DC;
+            border-bottom: 5px solid #D6A756;
+        }
+        .hero-banner h1 {
+            color: #D6A756;
+        }
+
+
+        /* Button */
+        .btn-outline {
+            color: #D6A756;
+            border-color: #D6A756;
+        }
+        .btn-outline:hover {
+            background-color: #D6A756;
+            color: #2E1F1A;
+        }
+
+
+        /* Section titles */
+        .section-title {
+            color: #2E1F1A;
+            border-bottom: 3px solid #D6A756;
+            display: inline-block;
+            padding-bottom: 0.4rem;
+        }
+
+
+        /* Section images */
+        .section-image {
+            height: 280px;
+            border-bottom: 4px solid #D6A756;
+        }
+
+
+        /* Cards */
+        .music-card {
+            background-color: #FBF6EF;
+            border: none;
+            border-top: 4px solid #D6A756;
+            transition: transform 0.2s;
+        }
+        .music-card:hover {
+            transform: translateY(-5px);
+            background-color: #fae9d2;
+        }
+        .music-card .card-title {
+            color: #B23A2F;
+        }
+        .card-link-custom {
+            color: #B23A2F;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+
+    </style>
+{% endblock %}

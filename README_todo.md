@@ -14,7 +14,7 @@ Exemple dans la table : image_front, image_side, etc ...
 (strife je crois)
 
 
-je t'aime <3>
+- Lors de l'inscrpition, le client doit être prévu d'un mail de confirmation
 
 
 
