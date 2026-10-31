@@ -3,38 +3,167 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+<div class="login-page">
+    <form method="post" class="login-form">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
-        </div>
-    {% endif %}
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+            </div>
+        {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <label for="inputEmail">Email</label>
+        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+        <label for="inputPassword">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+        <button class="btn btn-lg btn-primary" type="submit">
+            Sign in
+        </button>
+        <a href="{{ path('app_forgot_password_request') }}" class="forgot-password-link">
+            Mot de passe oublié ?
+        </a>
+    </form>
 
+    <div class="test-accounts">
+        <br>
+        <div>Admin</div>
+        <div>admin1@gmail.com</div>
+        <div>testtest1</div>
+        <br>
+        <div>User 1 (mail vérifié)</div>
+        <div>test2@gmail.com</div>
+        <div>testtest1</div>
+    </div>
+</div>
 
-<br>
-<div>Admin</div>
-<div>admin1@gmail.com</div>
-<div>testtest1</div>
-<br>
-<div>User 1 (mail vérifié)</div>
-<div>test2@gmail.com</div>
-<div>testtest1</div>
+<style>
+    /* Login page layout */
+    .login-page {
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 20px;
+        background: #F3E9DC;
+    }
 
+    /* Login form */
+    .login-form {
+        box-sizing: border-box;
+        width: min(100%, 460px);
+        padding: 36px;
+        border: 1px solid #e5d5c3;
+        border-radius: 16px;
+        background: #fffaf4;
+        color: #2E1F1A;
+        box-shadow: 0 10px 30px rgba(46, 31, 26, 0.12);
+    }
 
+    .login-form h1 {
+        margin-bottom: 24px;
+        color: #2E1F1A;
+        text-align: center;
+    }
+
+    .login-form label {
+        display: block;
+        margin: 15px 0 7px;
+        font-weight: 600;
+    }
+
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d8c7b5;
+        border-radius: 8px;
+        background: #fff;
+        color: #2E1F1A;
+        font: inherit;
+    }
+
+    .login-form input[type="email"]:focus,
+    .login-form input[type="password"]:focus {
+        border-color: #D6A756;
+        outline: 3px solid rgba(214, 167, 86, 0.2);
+    }
+
+    /* Submit button */
+    .login-form button {
+        width: 100%;
+        margin-top: 24px;
+        padding: 13px;
+        border: 0;
+        border-radius: 8px;
+        background: #2E1F1A;
+        color: #F3E9DC;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .login-form button:hover {
+        background: #4a3329;
+    }
+
+    /* Login error and active session message */
+    .login-form .alert-danger,
+    .login-form .mb-3 {
+        margin-bottom: 18px;
+        padding: 12px;
+        border-radius: 8px;
+        background: #fff0ee;
+        color: #842c24;
+        line-height: 1.5;
+    }
+
+    .login-form .mb-3 {
+        background: #f3e9dc;
+        color: #2E1F1A;
+    }
+
+    .login-form a {
+        color: #805c2b;
+    }
+
+    /* Test account details */
+    .test-accounts {
+        box-sizing: border-box;
+        width: min(100%, 460px);
+        margin-top: 20px;
+        padding: 18px 22px;
+        border: 1px solid #e5d5c3;
+        border-radius: 12px;
+        background: #fffaf4;
+        color: #5e4a3e;
+        line-height: 1.6;
+        box-shadow: 0 6px 18px rgba(46, 31, 26, 0.08);
+    }
+
+    .test-accounts div:nth-of-type(1),
+    .test-accounts div:nth-of-type(4) {
+        color: #2E1F1A;
+        font-weight: 700;
+    }
+
+    /* Mobile layout */
+    @media (max-width: 500px) {
+        .login-page {
+            padding: 30px 16px;
+        }
+
+        .login-form {
+            padding: 26px 20px;
+        }
+    }
+</style>
 {% endblock %}

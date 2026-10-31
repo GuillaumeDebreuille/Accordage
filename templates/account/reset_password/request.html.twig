@@ -3,20 +3,130 @@
 {% block title %}Reset your password{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('reset_password_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
-    <h1>Reset your password</h1>
+    {# Password reset request page #}
+    <div class="reset-password-page">
+        <div class="reset-password-card">
+            <h1>Réinitialisez votre mot de passe</h1>
 
-    {{ form_start(requestForm) }}
-        {{ form_row(requestForm.email) }}
-        <div>
-            <small>
-                Enter your email address, and we will send you a
-                link to reset your password.
-            </small>
+            {# Display password reset errors #}
+            {% for flash_error in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ flash_error }}
+                </div>
+            {% endfor %}
+
+            {# Password reset request form #}
+            {{ form_start(requestForm, {'attr': {'class': 'reset-password-form'}}) }}
+                {{ form_row(requestForm.email) }}
+
+                <p class="reset-password-help">
+                    Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+                </p>
+
+                <button type="submit" class="btn">
+                    Envoyer
+                </button>
+            {{ form_end(requestForm) }}
         </div>
+    </div>
 
-        <button class="btn btn-primary">Send password reset email</button>
-    {{ form_end(requestForm) }}
+    {# Password reset page styles #}
+    <style>
+        .reset-password-page {
+            min-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            background: #F3E9DC;
+        }
+
+        .reset-password-card {
+            box-sizing: border-box;
+            width: min(100%, 560px);
+            padding: 36px;
+            border: 1px solid #e5d5c3;
+            border-radius: 16px;
+            background: #fffaf4;
+            color: #2E1F1A;
+            box-shadow: 0 10px 30px rgba(46, 31, 26, 0.12);
+        }
+
+        .reset-password-card h1 {
+            margin: 0 0 24px;
+            color: #2E1F1A;
+            text-align: center;
+        }
+
+        .reset-password-form .mb-3 {
+            margin-bottom: 18px;
+        }
+
+        .reset-password-form label {
+            display: block;
+            margin-bottom: 7px;
+            color: #2E1F1A;
+            font-weight: 600;
+        }
+
+        .reset-password-form input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d8c7b5;
+            border-radius: 8px;
+            background: #fff;
+            color: #2E1F1A;
+            font: inherit;
+        }
+
+        .reset-password-form input:focus {
+            border-color: #D6A756;
+            outline: 3px solid rgba(214, 167, 86, 0.2);
+        }
+
+        .reset-password-help {
+            margin: 12px 0 20px;
+            color: #6b5a50;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .reset-password-form .btn {
+            width: 100%;
+            padding: 13px;
+            border: 0;
+            border-radius: 8px;
+            background: #2E1F1A;
+            color: #F3E9DC;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .reset-password-form .btn:hover {
+            background: #4a3329;
+        }
+
+        .alert-danger {
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            border: 1px solid #e4b8b3;
+            border-radius: 8px;
+            background: #fff0ee;
+            color: #842c24;
+        }
+
+        /* Adjust the layout for small screens */
+        @media (max-width: 500px) {
+            .reset-password-page {
+                padding: 30px 16px;
+            }
+
+            .reset-password-card {
+                padding: 26px 20px;
+            }
+        }
+    </style>
 {% endblock %}

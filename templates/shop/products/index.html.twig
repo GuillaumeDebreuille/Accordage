@@ -1,4 +1,10 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Produits à vendre
+{% endblock %}
+
+{% block body %}
 
 
 {# ----- start of the sorting system ----- #}
@@ -13,45 +19,43 @@
     {% set products = products|sort((a, b) => b.price <=> a.price) %}
 {% endif %}
 
-<form method="get" action="{{ path('app_products') }}">
+<div class="product-page">
 
-    {# 1/3 : New / Occasion #}
-    <label>
-        <input type="radio" name="state" value="new" onchange="this.form.submit()"
-            {{ state == 'new' ? 'checked' : '' }}> Neuf
-    </label>
-    <label>
-        <input type="radio" name="state" value="used" onchange="this.form.submit()"
-            {{ state == 'used' ? 'checked' : '' }}> Seconde main
-    </label>
+    <form method="get" action="{{ path('app_products') }}" class="product-filters">
 
-    {# 2/3 : Catégories ( Guitar / Bass / Other ) #}
-    <label>
-        <input type="checkbox" name="categories[]" value="guitar" onchange="this.form.submit()"
-            {{ 'guitar' in categories ? 'checked' : '' }}> Guitare
-    </label>
-    <label>
-        <input type="checkbox" name="categories[]" value="bass" onchange="this.form.submit()"
-            {{ 'bass' in categories ? 'checked' : '' }}> Basse
-    </label>
-    <label>
-        <input type="checkbox" name="categories[]" value="other" onchange="this.form.submit()"
-            {{ 'other' in categories ? 'checked' : '' }}> Autre
-    </label>
-    
-    {# 3/3 : Sort by price #}
-    <select name="sort" onchange="this.form.submit()">
-        <option value="none" {{ sort == 'none' ? 'selected' : '' }}>Sans tri</option>
-        <option value="asc" {{ sort == 'asc' ? 'selected' : '' }}>Prix croissant</option>
-        <option value="desc" {{ sort == 'desc' ? 'selected' : '' }}>Prix décroissant</option>
-    </select>
-</form>
+        {# 1/3 : New / Occasion #}
+        <label>
+            <input type="radio" name="state" value="new" onchange="this.form.submit()"
+                {{ state == 'new' ? 'checked' : '' }}> Neuf
+        </label>
+        <label>
+            <input type="radio" name="state" value="used" onchange="this.form.submit()"
+                {{ state == 'used' ? 'checked' : '' }}> Seconde main
+        </label>
 
-{# ----- end of the sorting system ----- #}
+        {# 2/3 : Catégories ( Guitar / Bass / Other ) #}
+        <label>
+            <input type="checkbox" name="categories[]" value="guitar" onchange="this.form.submit()"
+                {{ 'guitar' in categories ? 'checked' : '' }}> Guitare
+        </label>
+        <label>
+            <input type="checkbox" name="categories[]" value="bass" onchange="this.form.submit()"
+                {{ 'bass' in categories ? 'checked' : '' }}> Basse
+        </label>
+        <label>
+            <input type="checkbox" name="categories[]" value="other" onchange="this.form.submit()"
+                {{ 'other' in categories ? 'checked' : '' }}> Autre
+        </label>
 
+        {# 3/3 : Sort by price #}
+        <select name="sort" onchange="this.form.submit()">
+            <option value="none" {{ sort == 'none' ? 'selected' : '' }}>Sans tri</option>
+            <option value="asc" {{ sort == 'asc' ? 'selected' : '' }}>Prix croissant</option>
+            <option value="desc" {{ sort == 'desc' ? 'selected' : '' }}>Prix décroissant</option>
+        </select>
+    </form>
 
-
-
+    {# ----- end of the sorting system ----- #}
 
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
@@ -62,30 +66,40 @@
             {% if (state == 'new' and not product.isUsed) %}
             {% if categories is empty or product.category in categories %}
                 {% if not product.isUsed %}
-                    id : {{ product.id }} 
-                    name : {{ product.name }} 
-                    category : {{ product.category }}  
-                    description : {{ product.description }} 
-                    prix : {{ product.price }}€ 
-                    stock : {{ product.stock }} 
-                    image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                    <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                    <br>
-                    {# Start of button "add to cart" #}
-                    {% if product.stock > 0 %}
-                        <form action="{{ path('app_cart', { type: 'product_new', id: product.id }) }}" method="post">
-                            <label for="quantity_{{ product.id }}">Quantité :</label>
-                            <select name="quantity" id="quantity_{{ product.id }}">
-                                {% for i in 1..product.stock %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                        </form>
-                    {% else %}
-                        <button class="btn btn-secondary" disabled>Rupture de stock</button>
-                    {% endif %}
-                    {# End of button "add to cart" #}
+                    <article class="product-card">
+                        <div class="product-card-body">
+                            <p class="product-meta">ID : {{ product.id }}</p>
+                            <h3 class="product-card-title">{{ product.name }}</h3>
+                            <p class="product-category">{{ product.category }}</p>
+                            <p class="product-description">{{ product.description }}</p>
+                            <p class="product-price">{{ product.price }}€</p>
+                            <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                            {% if product.images|length > 0 %}
+                                <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                            {% endif %}
+
+                            <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                                Voir les détails
+                            </a>
+
+                            {# Start of button "add to cart" #}
+                            {% if product.stock > 0 %}
+                                <form action="{{ path('app_cart', { type: 'product_new', id: product.id }) }}" method="post" class="product-cart-form">
+                                    <label for="quantity_{{ product.id }}">Quantité :</label>
+                                    <select name="quantity" id="quantity_{{ product.id }}">
+                                        {% for i in 1..product.stock %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn product-button">Ajouter au panier</button>
+                                </form>
+                            {% else %}
+                                <button class="btn product-button" disabled>Rupture de stock</button>
+                            {% endif %}
+                            {# End of button "add to cart" #}
+                        </div>
+                    </article>
                 {% endif %}
             {% endif %}
             {% endif %}
@@ -95,33 +109,39 @@
             {% if (state == 'used' and product.isUsed) %}
             {% if categories is empty or product.category in categories %}
                 {% if product.isUsed %}
-                    id : {{ product.id }}
-                    name : {{ product.name }} 
-                    category : {{ product.category }}  
-                    description : {{ product.description }}  
-                    prix : {{ product.price }}€ 
-                    stock : {{ product.stock }} 
-                    image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                    <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                    <br>
-                    {# Start of button "add to cart" #}
-                    {% if product.stock > 0 %}
-                        <form action="{{ path('app_cart', { type: 'product_used', id: product.id }) }}" method="post">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                        </form>
-                    {% else %}
-                        <button class="btn btn-secondary" disabled>Rupture de stock</button>
-                    {% endif %}
-                    {# End of button "add to cart" #}
+                    <article class="product-card">
+                        <div class="product-card-body">
+                            <p class="product-meta">ID : {{ product.id }}</p>
+                            <h3 class="product-card-title">{{ product.name }}</h3>
+                            <p class="product-category">{{ product.category }}</p>
+                            <p class="product-description">{{ product.description }}</p>
+                            <p class="product-price">{{ product.price }}€</p>
+                            <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                            {% if product.images|length > 0 %}
+                                <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                            {% endif %}
+
+                            <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                                Voir les détails
+                            </a>
+
+                            {# Start of button "add to cart" #}
+                            {% if product.stock > 0 %}
+                                <form action="{{ path('app_cart', { type: 'product_used', id: product.id }) }}" method="post" class="product-cart-form">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn product-button">Ajouter au panier</button>
+                                </form>
+                            {% else %}
+                                <button class="btn product-button" disabled>Rupture de stock</button>
+                            {% endif %}
+                            {# End of button "add to cart" #}
+                        </div>
+                    </article>
                 {% endif %}
             {% endif %}
             {% endif %}
         {% endfor %}
-
-
-
-
 
         {% else %}
             {% if app.user.verified %}
@@ -132,30 +152,39 @@
                 {% if (state == 'new' and not product.isUsed) %}
                 {% if categories is empty or product.category in categories %}
                     {% if not product.isUsed %}
-                        id : {{ product.id }} 
-                        name : {{ product.name }}  
-                        category : {{ product.category }}  
-                        description : {{ product.description }}  
-                        prix : {{ product.price }}€ 
-                        stock : {{ product.stock }} 
-                        image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                        <br>
-                        {# Start of button "add to cart" #}
-                        {% if product.stock > 0 %}
-                            <form action="{{ path('app_cart', { type: 'product_new', id: product.id }) }}" method="post">
-                                <label for="quantity_{{ product.id }}">Quantité :</label>
-                                <select name="quantity" id="quantity_{{ product.id }}">
-                                    {% for i in 1..product.stock %}
-                                        <option value="{{ i }}">{{ i }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                            </form>
-                        {% else %}
-                            <button class="btn btn-secondary" disabled>Rupture de stock</button>
-                        {% endif %}
-                        {# End of button "add to cart" #}
+                        <article class="product-card">
+                            <div class="product-card-body">
+                                <h3 class="product-card-title">{{ product.name }}</h3>
+                                <p class="product-category">{{ product.category }}</p>
+                                <p class="product-description">{{ product.description }}</p>
+                                <p class="product-price">{{ product.price }}€</p>
+                                <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                                {% if product.images|length > 0 %}
+                                    <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                                {% endif %}
+
+                                <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                                    Voir les détails
+                                </a>
+
+                                {# Start of button "add to cart" #}
+                                {% if product.stock > 0 %}
+                                    <form action="{{ path('app_cart', { type: 'product_new', id: product.id }) }}" method="post" class="product-cart-form">
+                                        <label for="quantity_{{ product.id }}">Quantité :</label>
+                                        <select name="quantity" id="quantity_{{ product.id }}">
+                                            {% for i in 1..product.stock %}
+                                                <option value="{{ i }}">{{ i }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn product-button">Ajouter au panier</button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn product-button" disabled>Rupture de stock</button>
+                                {% endif %}
+                                {# End of button "add to cart" #}
+                            </div>
+                        </article>
                     {% endif %}
                 {% endif %}
                 {% endif %}
@@ -165,52 +194,67 @@
                 {% if (state == 'used' and product.isUsed) %}
                 {% if categories is empty or product.category in categories %}
                     {% if product.isUsed %}
-                        id : {{ product.id }} 
-                        name : {{ product.name }}  
-                        category : {{ product.category }}  
-                        description : {{ product.description }}  
-                        prix : {{ product.price }}€ 
-                        stock : {{ product.stock }} 
-                        image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                        <br>
-                        {# Start of button "add to cart" #}
-                        {% if product.stock > 0 %}
-                            <form action="{{ path('app_cart', { type: 'product_used', id: product.id }) }}" method="post">
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                            </form>
-                        {% else %}
-                            <button class="btn btn-secondary" disabled>Rupture de stock</button>
-                        {% endif %}
-                        {# End of button "add to cart" #}
+                        <article class="product-card">
+                            <div class="product-card-body">
+                                <h3 class="product-card-title">{{ product.name }}</h3>
+                                <p class="product-category">{{ product.category }}</p>
+                                <p class="product-description">{{ product.description }}</p>
+                                <p class="product-price">{{ product.price }}€</p>
+                                <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                                {% if product.images|length > 0 %}
+                                    <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                                {% endif %}
+
+                                <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                                    Voir les détails
+                                </a>
+
+                                {# Start of button "add to cart" #}
+                                {% if product.stock > 0 %}
+                                    <form action="{{ path('app_cart', { type: 'product_used', id: product.id }) }}" method="post" class="product-cart-form">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn product-button">Ajouter au panier</button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn product-button" disabled>Rupture de stock</button>
+                                {% endif %}
+                                {# End of button "add to cart" #}
+                            </div>
+                        </article>
                     {% endif %}
                 {% endif %}
                 {% endif %}
             {% endfor %}
 
-
-
-
-
             {% else %}
 {# ------------------ Logged-in user, but email not verified ------------------ #}
             <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+            <div class="product-notice">
+                <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+            </div>
 
             {% for product in products %}
                 {% if (state == 'new' and not product.isUsed) %}
                 {% if categories is empty or product.category in categories %}
                     {% if not product.isUsed %}
-                        id : {{ product.id }} 
-                        name : {{ product.name }}  
-                        category : {{ product.category }}  
-                        description : {{ product.description }}  
-                        prix : {{ product.price }}€ 
-                        stock : {{ product.stock }} 
-                        image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                        <br>
+                        <article class="product-card">
+                            <div class="product-card-body">
+                                <h3 class="product-card-title">{{ product.name }}</h3>
+                                <p class="product-category">{{ product.category }}</p>
+                                <p class="product-description">{{ product.description }}</p>
+                                <p class="product-price">{{ product.price }}€</p>
+                                <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                                {% if product.images|length > 0 %}
+                                    <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                                {% endif %}
+
+                                <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                                    Voir les détails
+                                </a>
+                            </div>
+                        </article>
                     {% endif %}
                 {% endif %}
                 {% endif %}
@@ -220,47 +264,62 @@
                 {% if (state == 'used' and product.isUsed) %}
                 {% if categories is empty or product.category in categories %}
                     {% if product.isUsed %}
-                        id : {{ product.id }} 
-                        name : {{ product.name }}  
-                        category : {{ product.category }}  
-                        description : {{ product.description }} 
-                        prix : {{ product.price }}€ 
-                        stock : {{ product.stock }}
-                        image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                        <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                        <br>
+                        <article class="product-card">
+                            <div class="product-card-body">
+                                <h3 class="product-card-title">{{ product.name }}</h3>
+                                <p class="product-category">{{ product.category }}</p>
+                                <p class="product-description">{{ product.description }}</p>
+                                <p class="product-price">{{ product.price }}€</p>
+                                <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                                {% if product.images|length > 0 %}
+                                    <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                                {% endif %}
+
+                                <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                                    Voir les détails
+                                </a>
+                            </div>
+                        </article>
                     {% endif %}
                 {% endif %}
                 {% endif %}
             {% endfor %}
-
-
-
-
 
             {% endif %}
         {% endif %}
     {% else %}
 {# ------------------ Not logged in ------------------ #}
     <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
-    <a href="{{ path('app_login') }}">Se Connecter</a>-<a href="{{ path('app_register') }}">Créer un comtpe</a><br>
+    <div class="product-notice">
+        <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+        <a href="{{ path('app_login') }}">Se Connecter</a> -
+        <a href="{{ path('app_register') }}">Créer un comtpe</a>
+    </div>
 
     {% for product in products %}
         {% if (state == 'new' and not product.isUsed) %}
         {% if categories is empty or product.category in categories %}
             {% if not product.isUsed %}
-                id : {{ product.id }}
-                name : {{ product.name }} 
-                category : {{ product.category }} 
-                description : {{ product.description }}
-                prix : {{ product.price }}€
-                stock : {{ product.stock }}
-                image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                <br>
+                <article class="product-card">
+                    <div class="product-card-body">
+                        <h3 class="product-card-title">{{ product.name }}</h3>
+                        <p class="product-category">{{ product.category }}</p>
+                        <p class="product-description">{{ product.description }}</p>
+                        <p class="product-price">{{ product.price }}€</p>
+                        <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                        {% if product.images|length > 0 %}
+                            <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                        {% endif %}
+
+                        <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                            Voir les détails
+                        </a>
+                    </div>
+                </article>
             {% endif %}
-            {% endif %}
+        {% endif %}
         {% endif %}
     {% endfor %}
 
@@ -268,24 +327,199 @@
         {% if (state == 'used' and product.isUsed) %}
         {% if categories is empty or product.category in categories %}
             {% if product.isUsed %}
-                id : {{ product.id }}
-                name : {{ product.name }}
-                category : {{ product.category }} 
-                description : {{ product.description }}
-                prix : {{ product.price }}€
-                stock : {{ product.stock }}
-                image : <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" style="width:120px; height:120px; object-fit:contain;" >
-                <a href="{{ path('app_product_details', {'id': product.id}) }}">Voir les détails</a>
-                <br>
+                <article class="product-card">
+                    <div class="product-card-body">
+                        <h3 class="product-card-title">{{ product.name }}</h3>
+                        <p class="product-category">{{ product.category }}</p>
+                        <p class="product-description">{{ product.description }}</p>
+                        <p class="product-price">{{ product.price }}€</p>
+                        <p class="product-meta">Stock : {{ product.stock }}</p>
+
+                        {% if product.images|length > 0 %}
+                            <img src="{{ asset('uploads/products/' ~ product.images[0]) }}" class="product-image" alt="{{ product.name }}">
+                        {% endif %}
+
+                        <a class="btn product-button" href="{{ path('app_product_details', {'id': product.id}) }}">
+                            Voir les détails
+                        </a>
+                    </div>
+                </article>
             {% endif %}
         {% endif %}
         {% endif %}
     {% endfor %}
 
-
-
-
-
     {% endif %}
 
+</div>
 
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .product-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .product-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem 1.5rem;
+            margin-bottom: 3rem;
+            padding: 1.25rem 1.5rem;
+            background-color: #FBF6EF;
+            border-left: 5px solid #D6A756;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+        }
+
+        .product-filters label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            color: #2E1F1A;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .product-filters input {
+            accent-color: #B23A2F;
+        }
+
+        .product-filters select {
+            padding: 0.5rem 0.75rem;
+            color: #2E1F1A;
+            background-color: #fff;
+            border: 1px solid #D6A756;
+            border-radius: 0.4rem;
+        }
+
+        .product-card {
+            display: inline-block;
+            width: calc(33.333% - 1.1rem);
+            margin: 0 1rem 1rem 0;
+            vertical-align: top;
+            overflow: hidden;
+            background-color: #fff;
+            border: 1px solid #E7D8C5;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+        }
+
+        .product-card-body {
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem;
+        }
+
+        .product-card-title {
+            margin: 0 0 0.5rem;
+            color: #B23A2F;
+            font-size: 1.25rem;
+        }
+
+        .product-category,
+        .product-meta {
+            margin: 0 0 0.5rem;
+            color: #66544B;
+        }
+
+        .product-description {
+            color: #2E1F1A;
+        }
+
+        .product-price {
+            margin: 0.5rem 0;
+            color: #2E1F1A;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .product-image {
+            display: block;
+            width: 100%;
+            height: 190px;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
+            object-fit: contain;
+            background-color: #F3E9DC;
+            border-radius: 0.5rem;
+        }
+
+        .product-button {
+            margin-top: 0.5rem;
+            color: #2E1F1A;
+            background-color: #D6A756;
+            border: 1px solid #D6A756;
+            font-weight: 600;
+        }
+
+        .product-button:hover,
+        .product-button:focus {
+            color: #F3E9DC;
+            background-color: #2E1F1A;
+            border-color: #2E1F1A;
+        }
+
+        .product-cart-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .product-notice {
+            margin: 1rem 0 2rem;
+            padding: 1.25rem;
+            background-color: #FBF6EF;
+            border-left: 5px solid #D6A756;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+        }
+
+        .product-notice a {
+            color: #B23A2F;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .product-notice a:hover {
+            color: #7D261F;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 800px) {
+            .product-card {
+                width: calc(50% - 1rem);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-page {
+                padding: 1.25rem 1rem 3rem;
+            }
+
+            .product-filters {
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+
+            .product-card {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .product-card-body {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+{% endblock %}

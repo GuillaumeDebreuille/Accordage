@@ -1,11 +1,110 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
+{% block title %}E-mail de réinitialisation envoyé{% endblock %}
 
 {% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+    {# Password reset confirmation page #}
+    <div class="reset-email-page">
+        <div class="reset-email-card">
+            <div class="reset-email-icon" aria-hidden="true">✉</div>
+
+            <h1>E-mail de réinitialisation envoyé</h1>
+
+            <p>
+                Si un compte associé à cette adresse e-mail existe, un message vient de vous être envoyé.
+                Il contient un lien pour réinitialiser votre mot de passe.
+            </p>
+
+            <p>
+                Ce lien expirera dans
+                <strong>{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</strong>.
+            </p>
+
+            <p class="reset-email-help">
+                Vous n’avez pas reçu l’e-mail ? Vérifiez votre dossier de courriers indésirables ou
+                <a href="{{ path('app_forgot_password_request') }}">essayez à nouveau</a>.
+            </p>
+        </div>
+    </div>
+
+    {# Password reset confirmation styles #}
+    <style>
+        .reset-email-page {
+            min-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            background: #F3E9DC;
+        }
+
+        .reset-email-card {
+            box-sizing: border-box;
+            width: min(100%, 620px);
+            padding: 42px 38px;
+            border: 1px solid #e5d5c3;
+            border-radius: 16px;
+            background: #fffaf4;
+            color: #2E1F1A;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(46, 31, 26, 0.12);
+        }
+
+        .reset-email-icon {
+            width: 64px;
+            height: 64px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #F3E9DC;
+            color: #2E1F1A;
+            font-size: 30px;
+        }
+
+        .reset-email-card h1 {
+            margin: 0 0 20px;
+            color: #2E1F1A;
+            font-size: clamp(1.6rem, 4vw, 2rem);
+        }
+
+        .reset-email-card p {
+            margin: 0 0 16px;
+            color: #6b5a50;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .reset-email-card strong {
+            color: #2E1F1A;
+        }
+
+        .reset-email-help {
+            margin-top: 26px !important;
+            padding-top: 20px;
+            border-top: 1px solid #e5d5c3;
+        }
+
+        .reset-email-card a {
+            color: #8a5a18;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .reset-email-card a:hover {
+            color: #2E1F1A;
+        }
+
+        @media (max-width: 500px) {
+            .reset-email-page {
+                min-height: 60vh;
+                padding: 30px 16px;
+            }
+
+            .reset-email-card {
+                padding: 32px 22px;
+            }
+        }
+    </style>
 {% endblock %}

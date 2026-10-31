@@ -1,115 +1,355 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
-<a href="{{ path('app_home_admin') }}">Retour</a>
+{% block title %}Administration des formations{% endblock %}
 
-<h1>Gestion des Formations (Leçons & Packs)</h1>
+{% block body %}
+<main class="admin-training">
+    <h1>Gestion des formations</h1>
+    <p class="admin-intro">Ajoutez, modifiez ou supprimez des leçons et des packs.</p>
 
-<h2>Ajouter un Pack</h2>
-<form action="{{ path('app_pack_admin_add') }}" method="POST">
-    <input type="text" name="title" placeholder="Titre du pack" required>
-    <textarea name="description" placeholder="Description"></textarea>
-    <input type="number" step="0.01" name="price" placeholder="Prix" required>
-    <input type="text" name="image" placeholder="Nom image (ex: pack1.jpg)">
-    <select name="instrument">
-        <option value="guitar">Guitar</option>
-        <option value="bass">Bass</option>
-    </select>
-    <button type="submit">Créer le pack</button>
-</form>
+    {# Ajouter un pack #}
+    <section class="admin-card">
+        <h2>Ajouter un pack</h2>
 
-<h2>Liste des Packs</h2>
-<table border="1">
-    <thead>
-        <tr><th>ID</th><th>Titre</th><th>Instrument</th><th>Prix</th><th>Image</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-        {% for pack in packs %}
-            <tr>
-                <td>
-                    {{ pack.id }}
-                    <form id="form-pack-{{ pack.id }}" action="{{ path('app_pack_admin_edit', {id: pack.id}) }}" method="POST"></form>
-                </td>
-                <td><input type="text" name="title" value="{{ pack.title }}" form="form-pack-{{ pack.id }}"></td>
-                <td>
-                    <select name="instrument" form="form-pack-{{ pack.id }}">
-                        <option value="guitar" {{ pack.instrument == 'guitar' ? 'selected' : '' }}>Guitar</option>
-                        <option value="bass" {{ pack.instrument == 'bass' ? 'selected' : '' }}>Bass</option>
-                    </select>
-                </td>
-                <td><input type="number" step="0.01" name="price" value="{{ pack.price }}" form="form-pack-{{ pack.id }}"></td>
-                <td><input type="text" name="image" value="{{ pack.image }}" form="form-pack-{{ pack.id }}"></td>
-                <td>
-                    <button type="submit" form="form-pack-{{ pack.id }}">Enregistrer</button>
-                    <form action="{{ path('app_pack_admin_delete', {id: pack.id}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer la suppression ?');">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <form action="{{ path('app_pack_admin_add') }}" method="post">
+            <div class="admin-form-grid">
+                <div>
+                    <label for="new-pack-title">Titre</label>
+                    <input id="new-pack-title" type="text" name="title" required>
+                </div>
 
-<hr>
+                <div>
+                    <label for="new-pack-description">Description</label>
+                    <textarea id="new-pack-description" name="description"></textarea>
+                </div>
 
-<h2>Ajouter une Leçon</h2>
-<form action="{{ path('app_lesson_admin_add') }}" method="POST">
-    <input type="text" name="title" placeholder="Titre de la leçon" required>
-    <textarea name="content" placeholder="Contenu"></textarea>
-    <input type="text" name="video_url" placeholder="URL Vidéo">
-    <textarea name="description" placeholder="Description"></textarea>
-    <input type="number" step="0.01" name="price" placeholder="Prix" required>
-    <input type="text" name="images" placeholder="Image (ex: lesson1.jpg)">
-    <select name="instrument">
-        <option value="guitar">Guitar</option>
-        <option value="bass">Bass</option>
-    </select>
-    <select name="lesson_pack_id">
-        <option value="">-- Aucun Pack (Indépendant) --</option>
-        {% for pack in packs %}
-            <option value="{{ pack.id }}">{{ pack.title }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Créer la leçon</button>
-</form>
+                <div>
+                    <label for="new-pack-instrument">Instrument</label>
+                    <input id="new-pack-instrument" type="text" name="instrument">
+                </div>
 
-<h2>Liste des Leçons</h2>
-<table border="1">
-    <thead>
-        <tr><th>ID</th><th>Titre</th><th>Instrument</th><th>Pack</th><th>Prix</th><th>Image</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-        {% for lesson in lessons %}
-            <tr>
-                <td>
-                    {{ lesson.id }}
-                    <form id="form-lesson-{{ lesson.id }}" action="{{ path('app_lesson_admin_edit', {id: lesson.id}) }}" method="POST"></form>
-                </td>
-                <td><input type="text" name="title" value="{{ lesson.title }}" form="form-lesson-{{ lesson.id }}"></td>
-                <td>
-                    <select name="instrument" form="form-lesson-{{ lesson.id }}">
-                        <option value="guitar" {{ lesson.instrument == 'guitar' ? 'selected' : '' }}>Guitar</option>
-                        <option value="bass" {{ lesson.instrument == 'bass' ? 'selected' : '' }}>Bass</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="lesson_pack_id" form="form-lesson-{{ lesson.id }}">
-                        <option value="">-- Aucun --</option>
+                <div>
+                    <label for="new-pack-price">Prix</label>
+                    <input id="new-pack-price" type="number" name="price" step="0.01">
+                </div>
+
+                <div>
+                    <label for="new-pack-image">Image</label>
+                    <input id="new-pack-image" type="text" name="image">
+                </div>
+
+                <button class="admin-button" type="submit">Ajouter le pack</button>
+            </div>
+        </form>
+    </section>
+
+    {# Liste et modification des packs #}
+    <section>
+        <h2>Packs existants</h2>
+
+        {% if packs is not empty %}
+            <div class="admin-card admin-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Instrument</th>
+                            <th>Prix</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for pack in packs %}
-                            <option value="{{ pack.id }}" {{ lesson.lessonPack and lesson.lessonPack.id == pack.id ? 'selected' : '' }}>{{ pack.title }}</option>
+                            {% set formId = 'form-pack-' ~ pack.id %}
+                            <form id="{{ formId }}"
+                                  action="{{ path('app_pack_admin_edit', {id: pack.id}) }}"
+                                  method="post"></form>
+
+                            <tr>
+                                <td>{{ pack.id }}</td>
+                                <td><input form="{{ formId }}" type="text" name="title" value="{{ pack.title }}" required></td>
+                                <td><textarea form="{{ formId }}" name="description">{{ pack.description|default('') }}</textarea></td>
+                                <td><input form="{{ formId }}" type="text" name="instrument" value="{{ pack.instrument|default('') }}"></td>
+                                <td><input form="{{ formId }}" type="number" name="price" step="0.01" value="{{ pack.price }}"></td>
+                                <td><input form="{{ formId }}" type="text" name="image" value="{{ pack.image|default('') }}"></td>
+                                <td>
+                                    <div class="admin-actions">
+                                        <button class="admin-button" type="submit" form="{{ formId }}">Enregistrer</button>
+
+                                        <form action="{{ path('app_pack_admin_delete', {id: pack.id}) }}" method="post">
+                                            <button class="admin-button admin-button-danger" type="submit">Supprimer</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="admin-empty">Aucun pack pour le moment.</p>
+        {% endif %}
+    </section>
+
+    {# Ajouter une leçon #}
+    <section class="admin-card">
+        <h2>Ajouter une leçon</h2>
+
+        <form action="{{ path('app_lesson_admin_add') }}" method="post">
+            <div class="admin-form-grid">
+                <div>
+                    <label for="new-lesson-title">Titre</label>
+                    <input id="new-lesson-title" type="text" name="title" required>
+                </div>
+
+                <div>
+                    <label for="new-lesson-description">Description</label>
+                    <textarea id="new-lesson-description" name="description"></textarea>
+                </div>
+
+                <div class="content-field">
+                    <label for="new-lesson-content">Contenu</label>
+                    <textarea id="new-lesson-content" name="content"></textarea>
+                </div>
+
+                <div>
+                    <label for="new-lesson-video">URL vidéo</label>
+                    <input id="new-lesson-video" type="text" name="video_url">
+                </div>
+
+                <div>
+                    <label for="new-lesson-instrument">Instrument</label>
+                    <input id="new-lesson-instrument" type="text" name="instrument">
+                </div>
+
+                <div>
+                    <label for="new-lesson-pack">Pack</label>
+                    <select id="new-lesson-pack" name="lesson_pack_id">
+                        <option value="">Aucun pack</option>
+                        {% for pack in packs %}
+                            <option value="{{ pack.id }}">{{ pack.title }}</option>
                         {% endfor %}
                     </select>
-                </td>
-                <td><input type="number" step="0.01" name="price" value="{{ lesson.price }}" form="form-lesson-{{ lesson.id }}"></td>
-                <td><input type="text" name="images" value="{{ lesson.images }}" form="form-lesson-{{ lesson.id }}"></td>
-                <td>
-                    <button type="submit" form="form-lesson-{{ lesson.id }}">Enregistrer</button>
-                    <form action="{{ path('app_lesson_admin_delete', {id: lesson.id}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer la suppression ?');">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                </div>
 
-{% include 'layout/footer.html.twig' %}
+                <div>
+                    <label for="new-lesson-price">Prix</label>
+                    <input id="new-lesson-price" type="number" name="price" step="0.01">
+                </div>
+
+                <div>
+                    <label for="new-lesson-images">Image</label>
+                    <input id="new-lesson-images" type="text" name="images">
+                </div>
+
+                <button class="admin-button" type="submit">Ajouter la leçon</button>
+            </div>
+        </form>
+    </section>
+
+    {# Liste et modification des leçons #}
+    <section>
+        <h2>Leçons existantes</h2>
+
+        {% if lessons is not empty %}
+            <div class="admin-card admin-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Contenu</th>
+                            <th>URL vidéo</th>
+                            <th>Instrument</th>
+                            <th>Pack</th>
+                            <th>Prix</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lesson in lessons %}
+                            {% set formId = 'form-lesson-' ~ lesson.id %}
+                            <form id="{{ formId }}"
+                                  action="{{ path('app_lesson_admin_edit', {id: lesson.id}) }}"
+                                  method="post"></form>
+
+                            <tr>
+                                <td>{{ lesson.id }}</td>
+                                <td><input form="{{ formId }}" type="text" name="title" value="{{ lesson.title }}" required></td>
+                                <td><textarea form="{{ formId }}" name="description">{{ lesson.description|default('') }}</textarea></td>
+                                <td><textarea form="{{ formId }}" name="content">{{ lesson.content|default('') }}</textarea></td>
+                                <td><input form="{{ formId }}" type="text" name="video_url" value="{{ lesson.videoUrl|default('') }}"></td>
+                                <td><input form="{{ formId }}" type="text" name="instrument" value="{{ lesson.instrument|default('') }}"></td>
+                                <td>
+                                    <select form="{{ formId }}" name="lesson_pack_id">
+                                        <option value="">Aucun pack</option>
+                                        {% for pack in packs %}
+                                            <option value="{{ pack.id }}"
+                                                {% if lesson.lessonPack and lesson.lessonPack.id == pack.id %}selected{% endif %}>
+                                                {{ pack.title }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input form="{{ formId }}" type="number" name="price" step="0.01" value="{{ lesson.price }}"></td>
+                                <td><input form="{{ formId }}" type="text" name="images" value="{{ lesson.images|default('') }}"></td>
+                                <td>
+                                    <div class="admin-actions">
+                                        <button class="admin-button" type="submit" form="{{ formId }}">Enregistrer</button>
+
+                                        <form action="{{ path('app_lesson_admin_delete', {id: lesson.id}) }}" method="post">
+                                            <button class="admin-button admin-button-danger" type="submit">Supprimer</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="admin-empty">Aucune leçon pour le moment.</p>
+        {% endif %}
+    </section>
+</main>
+
+<style>
+    .admin-training {
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 0 20px;
+        color: #242424;
+    }
+
+    .admin-training h1 {
+        margin-bottom: 8px;
+    }
+
+    .admin-training h2 {
+        margin: 36px 0 16px;
+        font-size: 1.4rem;
+    }
+
+    .admin-intro {
+        color: #666;
+        margin-bottom: 28px;
+    }
+
+    .admin-card {
+        padding: 22px;
+        margin-bottom: 24px;
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+    }
+
+    .admin-form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 14px;
+        align-items: end;
+    }
+
+    .admin-training label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    .admin-training input,
+    .admin-training textarea,
+    .admin-training select {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 9px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font: inherit;
+    }
+
+    .admin-training textarea {
+        min-height: 75px;
+        resize: vertical;
+    }
+
+    .admin-training .content-field textarea {
+        min-height: 130px;
+    }
+
+    .admin-table-wrap {
+        overflow-x: auto;
+    }
+
+    .admin-training table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .9rem;
+    }
+
+    .admin-training th,
+    .admin-training td {
+        padding: 10px;
+        border-bottom: 1px solid #e8e8e8;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .admin-training th {
+        background: #f6f6f6;
+        white-space: nowrap;
+    }
+
+    .admin-training td input,
+    .admin-training td textarea,
+    .admin-training td select {
+        min-width: 130px;
+    }
+
+    .admin-training td textarea {
+        min-width: 180px;
+    }
+
+    .admin-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-width: 150px;
+    }
+
+    .admin-button {
+        display: inline-block;
+        padding: 9px 13px;
+        border: 0;
+        border-radius: 6px;
+        background: #292929;
+        color: #fff;
+        font: inherit;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .admin-button:hover {
+        background: #444;
+    }
+
+    .admin-button-danger {
+        background: #a83232;
+    }
+
+    .admin-button-danger:hover {
+        background: #842727;
+    }
+
+    .admin-empty {
+        color: #777;
+        font-style: italic;
+    }
+</style>
+{% endblock %}

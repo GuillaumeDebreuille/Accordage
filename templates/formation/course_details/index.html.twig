@@ -1,15 +1,191 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{{ lesson.id }}
-{{ lesson.title }}
-{{ lesson.content }}
-{{ lesson.description }}
+{% block title %}{{ lesson.title }}{% endblock %}
 
-{% if not isCompleted %}
-    <form method="post" action="{{ path('app_course_complete', { id: lesson.id }) }}">
-        <input type="hidden" name="_token" value="{{ csrf_token('complete_lesson_' ~ lesson.id) }}">
-        <button type="submit">Terminer la leçon ?</button>
-    </form>
-{% else %}
-    <p>Leçon terminée</p>
-{% endif %}
+{% block body %}
+    <main class="lesson-page">
+        <article class="lesson-card">
+            <div class="lesson-content">
+                <h1>{{ lesson.title }}</h1>
+
+                <div class="lesson-intro">
+                    {% if lesson.images %}
+                        <img
+                            class="lesson-image"
+                            src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                            alt="Image de {{ lesson.title }}"
+                        >
+                    {% endif %}
+
+                    {% if lesson.description %}
+                        <p class="lesson-description">
+                            {{ lesson.description }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                {% if lesson.videoUrl %}
+                    <div class="video-container">
+                        <iframe
+                            src="{{ lesson.videoUrl|replace({'watch?v=': 'embed/'}) }}"
+                            title="Vidéo de {{ lesson.title }}"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                {% endif %}
+
+                {% if lesson.content %}
+                    <section class="lesson-text">
+                        {{ lesson.content }}
+                    </section>
+                {% endif %}
+
+                <div class="lesson-footer">
+                    {% if not isCompleted %}
+                        <form method="post" action="{{ path('app_course_complete', { id: lesson.id }) }}">
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token('complete_lesson_' ~ lesson.id) }}"
+                            >
+                            <button class="complete-button" type="submit">
+                                ✓ Terminer la leçon
+                            </button>
+                        </form>
+                    {% else %}
+                        <p class="completed-message">✓ Leçon terminée</p>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    </main>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .lesson-page {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .lesson-card {
+            overflow: hidden;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .lesson-content {
+            padding: 30px;
+        }
+
+        .lesson-content h1 {
+            margin: 0 0 24px;
+            color: #1f2937;
+            font-size: 2rem;
+        }
+
+        .lesson-intro {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .lesson-image {
+            width: 180px;
+            height: 140px;
+            flex: 0 0 180px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f3f4f6;
+        }
+
+        .lesson-description {
+            margin: 0;
+            color: #4b5563;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            margin-bottom: 24px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #111;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .lesson-text {
+            color: #374151;
+            line-height: 1.8;
+        }
+
+        .lesson-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .complete-button {
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            color: #333;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .complete-button:hover {
+            background: #f3f3f3;
+        }
+
+        .completed-message {
+            margin: 0;
+            color: #15803d;
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .lesson-page {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .lesson-content {
+                padding: 20px;
+            }
+
+            .lesson-content h1 {
+                font-size: 1.6rem;
+            }
+
+            .lesson-intro {
+                gap: 16px;
+            }
+
+            .lesson-image {
+                width: 110px;
+                height: 100px;
+                flex-basis: 110px;
+            }
+        }
+    </style>
+{% endblock %}

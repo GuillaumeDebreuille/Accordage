@@ -15,9 +15,9 @@ final class ProductsAdminController extends AbstractController
     #[Route('/products/admin', name: 'app_products_admin', methods: ['GET'])]
     public function index(ProductRepository $productRepository): Response
     {
-        // Sécurité admin
-        if (!$this->getUser() || !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'Accès refusé. Zone réservée à l administration');
+        // Check that the current user is an administrator.
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Accès refusé. Zone réservée à l’administration.');
             return $this->redirectToRoute('app_home');
         }
 
@@ -26,32 +26,78 @@ final class ProductsAdminController extends AbstractController
         ]);
     }
 
-    // product update button
+    #[Route('/products/admin/add', name: 'app_products_admin_add', methods: ['POST'])]
+    public function add(
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        // Check that the current user is an administrator.
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Accès refusé. Zone réservée à l’administration.');
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Decode the images field as a JSON array.
+        $imagesValue = $request->request->get('images', '[]');
+        $images = json_decode($imagesValue, true);
+
+        if (!is_array($images)) {
+            $this->addFlash('error', 'Le champ images doit contenir un tableau JSON valide.');
+            return $this->redirectToRoute('app_products_admin');
+        }
+
+        $product = new Product();
+        $product->setName($request->request->get('name', ''));
+        $product->setCategory($request->request->get('category', 'other'));
+        $product->setDescription($request->request->get('description', ''));
+        $product->setPrice((float) $request->request->get('price', 0));
+        $product->setStock((int) $request->request->get('stock', 0));
+        $product->setIsUsed($request->request->has('isUsed'));
+        $product->setImages($images);
+
+        // Set creation and modification dates.
+        $now = new \DateTimeImmutable();
+        $product->setCreatedAt($now);
+        $product->setUpdatedAt($now);
+
+        $em->persist($product);
+        $em->flush();
+
+        $this->addFlash('success', 'Produit ajouté avec succès.');
+
+        return $this->redirectToRoute('app_products_admin');
+    }
+
     #[Route('/products/admin/edit/{id}', name: 'app_products_admin_edit', methods: ['POST'])]
     public function edit(
         Product $product,
         Request $request,
         EntityManagerInterface $em
     ): Response {
-        // Sécurité admin
-        if (!$this->getUser() || !$this->isGranted('ROLE_ADMIN')) {
-            $this->addFlash('error', 'Accès refusé. Zone réservée à l administration');
+        // Check that the current user is an administrator.
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Accès refusé. Zone réservée à l’administration.');
             return $this->redirectToRoute('app_home');
         }
 
-        // Retrieving and updating form data
-        $product->setName($request->request->get('name'));
-        $product->setCategory($request->request->get('category'));
-        $product->setDescription($request->request->get('description'));
-        $product->setPrice((float) $request->request->get('price'));
-        $product->setStock((int) $request->request->get('stock'));
-        $product->setIsUsed($request->request->has('isUsed'));
-        
-        // Retrieves the text value and converts it into an array (via json_decode), or keeps an empty array.
-        $imagesValue = $request->request->get('images');
-        $product->setImages(is_string($imagesValue) ? json_decode($imagesValue, true) : $imagesValue);
+        // Decode the images field as a JSON array.
+        $imagesValue = $request->request->get('images', '[]');
+        $images = json_decode($imagesValue, true);
 
-        // Automatic update of the modification date
+        if (!is_array($images)) {
+            $this->addFlash('error', 'Le champ images doit contenir un tableau JSON valide.');
+            return $this->redirectToRoute('app_products_admin');
+        }
+
+        $product->setName($request->request->get('name', ''));
+        $product->setCategory($request->request->get('category', 'other'));
+        $product->setDescription($request->request->get('description', ''));
+        $product->setPrice((float) $request->request->get('price', 0));
+        $product->setStock((int) $request->request->get('stock', 0));
+        $product->setIsUsed($request->request->has('isUsed'));
+        $product->setImages($images);
+
+        // Update the modification date.
         $product->setUpdatedAt(new \DateTimeImmutable());
 
         $em->flush();

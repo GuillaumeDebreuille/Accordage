@@ -35,7 +35,7 @@ final class TrainingsAdminController extends AbstractController
 
         $lesson = new Lesson();
         $lesson->setTitle($request->request->get('title'));
-        $lesson->setContent($request->request->get('content'));
+        $lesson->setContent($request->request->get('content', ''));
         $lesson->setVideoUrl($request->request->get('video_url'));
         $lesson->setDescription($request->request->get('description'));
         $lesson->setPrice((float)$request->request->get('price'));
@@ -67,7 +67,7 @@ final class TrainingsAdminController extends AbstractController
         $lesson = $em->getRepository(Lesson::class)->find($id);
         if ($lesson) {
             $lesson->setTitle($request->request->get('title'));
-            $lesson->setContent($request->request->get('content'));
+            $lesson->setContent($request->request->get('content', ''));
             $lesson->setVideoUrl($request->request->get('video_url'));
             $lesson->setDescription($request->request->get('description'));
             $lesson->setPrice((float)$request->request->get('price'));

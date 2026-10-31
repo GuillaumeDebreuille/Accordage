@@ -1,12 +1,124 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+    {# Password reset form page #}
+    <div class="reset-password-page">
+        <div class="reset-password-card">
+            <div class="reset-password-icon" aria-hidden="true">🔒</div>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+            <h1>Réinitialiser votre mot de passe</h1>
+            <p class="reset-password-description">
+                Choisissez un nouveau mot de passe pour votre compte.
+            </p>
+
+            {{ form_start(resetForm, {'attr': {'class': 'reset-password-form'}}) }}
+                {{ form_row(resetForm.plainPassword) }}
+
+                <button type="submit" class="btn">
+                    Réinitialiser le mot de passe
+                </button>
+            {{ form_end(resetForm) }}
+        </div>
+    </div>
+
+    {# Password reset form styles #}
+    <style>
+        .reset-password-page {
+            min-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            background: #F3E9DC;
+        }
+
+        .reset-password-card {
+            box-sizing: border-box;
+            width: min(100%, 560px);
+            padding: 38px;
+            border: 1px solid #e5d5c3;
+            border-radius: 16px;
+            background: #fffaf4;
+            color: #2E1F1A;
+            box-shadow: 0 10px 30px rgba(46, 31, 26, 0.12);
+        }
+
+        .reset-password-icon {
+            width: 60px;
+            height: 60px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #F3E9DC;
+            font-size: 26px;
+        }
+
+        .reset-password-card h1 {
+            margin: 0 0 12px;
+            color: #2E1F1A;
+            font-size: clamp(1.6rem, 4vw, 2rem);
+            text-align: center;
+        }
+
+        .reset-password-description {
+            margin: 0 0 26px;
+            color: #6b5a50;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .reset-password-form label {
+            display: block;
+            margin-bottom: 7px;
+            color: #2E1F1A;
+            font-weight: 600;
+        }
+
+        .reset-password-form input {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d8c7b5;
+            border-radius: 8px;
+            background: #fff;
+            color: #2E1F1A;
+            font: inherit;
+        }
+
+        .reset-password-form input:focus {
+            border-color: #D6A756;
+            outline: 3px solid rgba(214, 167, 86, 0.2);
+        }
+
+        .reset-password-form .btn {
+            width: 100%;
+            margin-top: 22px;
+            padding: 13px;
+            border: 0;
+            border-radius: 8px;
+            background: #2E1F1A;
+            color: #F3E9DC;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .reset-password-form .btn:hover {
+            background: #4a3329;
+        }
+
+        @media (max-width: 500px) {
+            .reset-password-page {
+                padding: 30px 16px;
+            }
+
+            .reset-password-card {
+                padding: 28px 22px;
+            }
+        }
+    </style>
 {% endblock %}

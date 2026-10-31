@@ -1,240 +1,471 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-{# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-{# Début zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-<hr>
-<h3>Données des achats précédents (Phase de test)</h3>
-    <h4>tableau $purchasedlessons</h4>
-        {% for purchasedlesson in purchasedlessons %}
-        - id de la leçon : {{ purchasedlesson.lesson.id }} <br>
-        {% endfor %}
+{% block title %}
+    Accueil - Cours & Matériel de Musique
+{% endblock %}
 
-    <h4>tableau $purchasedpacks</h4>
-        {% for purchasedpack in purchasedpacks %}
-        - id du pack : {{ purchasedpack.lessonPack.id }} <br>
-        {% endfor %}
-
-    <h4>tableau $purchasedlessonsinpacks</h4>
-        {% for purchasedlessonsinpack in purchasedlessonsinpacks %}
-        - id des leçons de pack(s) : {{ purchasedlessonsinpack.id }} <br>
-        {% endfor %}
-<hr>
-{# Fin zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-{# Fin zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-{# Fin zone de test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-
-
-
-
+{% block body %}
 
 {# ----- start of the sorting system ----- #}
 
 {% set types = app.request.get('types', []) %}
 {% set instruments = app.request.get('instruments', []) %}
 
-<form method="get" action="{{ path('app_trainings') }}">
+<div class="training-page">
 
-{# 1/2 Types : Leçon / Pack #}
-    <label>
-        <input type="checkbox" name="types[]" value="lesson" onchange="this.form.submit()"
-            {{ 'lesson' in types ? 'checked' : '' }}> Leçons
-    </label>
-    <label>
-        <input type="checkbox" name="types[]" value="pack" onchange="this.form.submit()"
-            {{ 'pack' in types ? 'checked' : '' }}> Packs
-    </label>
+    <form method="get" action="{{ path('app_trainings') }}" class="training-filters">
 
-    <br>
+        {# 1/2 Types : Leçon / Pack #}
+        <label>
+            <input type="checkbox" name="types[]" value="lesson" onchange="this.form.submit()"
+                {{ 'lesson' in types ? 'checked' : '' }}> Leçons
+        </label>
+        <label>
+            <input type="checkbox" name="types[]" value="pack" onchange="this.form.submit()"
+                {{ 'pack' in types ? 'checked' : '' }}> Packs
+        </label>
 
-{# 2/2 Instruments : Guitare / Basse #}
-    <label>
-        <input type="checkbox" name="instruments[]" value="guitar" onchange="this.form.submit()"
-            {{ 'guitar' in instruments ? 'checked' : '' }}> Guitare
-    </label>
-    <label>
-        <input type="checkbox" name="instruments[]" value="bass" onchange="this.form.submit()"
-            {{ 'bass' in instruments ? 'checked' : '' }}> Basse
-    </label>
+        <br>
 
-</form>
+        {# 2/2 Instruments : Guitare / Basse #}
+        <label>
+            <input type="checkbox" name="instruments[]" value="guitar" onchange="this.form.submit()"
+                {{ 'guitar' in instruments ? 'checked' : '' }}> Guitare
+        </label>
+        <label>
+            <input type="checkbox" name="instruments[]" value="bass" onchange="this.form.submit()"
+                {{ 'bass' in instruments ? 'checked' : '' }}> Basse
+        </label>
 
-{# ----- end of the sorting system ----- #}
+    </form>
 
-
-
-
+    {# ----- end of the sorting system ----- #}
 
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
         {# Admin display #}
-        <h3>Admin !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-            <h2>Les packs : </h2>
-            {% for lessonspack in lessonspacks %}
-                {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
-                    {{ lessonspack.title }} <br>
-                        {% if lessonspack.instrument == 'bass' %}
-                            Basse électrique <br>
-                        {% elseif lessonspack.instrument == 'guitar' %}
-                            Guitare électrique <br>
-                        {% endif %}
-                    {{ lessonspack.price }}€ <br>
-                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
-                    {# Button add to cart #}
-                    <form action="{{ path('app_cart', { type: 'pack', id: lessonspack.id }) }}" method="post">
-                        <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                    </form>
-                    <br>
-                {% endif %}
-            {% endfor %}
+            <h2>Les packs :</h2>
+            <div class="training-list">
+                {% for lessonspack in lessonspacks %}
+                    {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
+                        <article class="training-card">
+                            <div class="training-card-body">
+                                <h3 class="training-card-title">{{ lessonspack.title }}</h3>
 
-                <h2>Les leçons : </h2>
-                {% for lesson in lessons %}
-                    {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
-                        name : {{ lesson.title }} <br>
-                        instrument : {{ lesson.instrument }} <br>
-                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                        prix : {{ lesson.price }}€ <br>
-                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
-                        {# Button add to cart #}
-                        <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                        </form>
-                        <br>
+                                {% if lessonspack.instrument == 'bass' %}
+                                    <p class="training-instrument">Basse électrique</p>
+                                {% elseif lessonspack.instrument == 'guitar' %}
+                                    <p class="training-instrument">Guitare électrique</p>
+                                {% endif %}
+
+                                <p class="training-price">{{ lessonspack.price }}€</p>
+
+                                <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" class="training-image" alt="{{ lessonspack.title }}">
+
+                                <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn training-button">
+                                    Voir le pack
+                                </a>
+
+                                {# Button add to cart #}
+                                <form action="{{ path('app_cart', { type: 'pack', id: lessonspack.id }) }}" method="post" class="training-cart-form">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn training-button">Ajouter au panier</button>
+                                </form>
+                            </div>
+                        </article>
                     {% endif %}
                 {% endfor %}
+            </div>
 
+            <h2>Les leçons :</h2>
+            <div class="training-list">
+                {% for lesson in lessons %}
+                    {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
+                        <article class="training-card">
+                            <div class="training-card-body">
+                                <h3 class="training-card-title">{{ lesson.title }}</h3>
+                                <p class="training-instrument">Instrument : {{ lesson.instrument }}</p>
 
+                                <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" class="training-image" alt="{{ lesson.title }}">
 
+                                <p class="training-price">Prix : {{ lesson.price }}€</p>
 
+                                <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn training-button">
+                                    Voir la leçon
+                                </a>
+
+                                {# Button add to cart #}
+                                <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post" class="training-cart-form">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn training-button">Ajouter au panier</button>
+                                </form>
+                            </div>
+                        </article>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
         {% else %}
             {% if app.user.verified %}
             {# Logged-in user, email verified #}
-            <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
 
-            <h2>Les packs : </h2>
-            {% for lessonspack in lessonspacks %}
-                {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
-                    {{ lessonspack.title }} <br>
-                        {% if lessonspack.instrument == 'bass' %}
-                            Basse électrique <br>
-                        {% elseif lessonspack.instrument == 'guitar' %}
-                            Guitare électrique <br>
+                <h2>Les packs :</h2>
+                <div class="training-list">
+                    {% for lessonspack in lessonspacks %}
+                        {% if lessonspack.id not in purchasedPackIds and lessonspack.id not in purchasedPackIdsFromLessons %}
+                            <article class="training-card">
+                                <div class="training-card-body">
+                                    <h3 class="training-card-title">{{ lessonspack.title }}</h3>
+
+                                    {% if lessonspack.instrument == 'bass' %}
+                                        <p class="training-instrument">Basse électrique</p>
+                                    {% elseif lessonspack.instrument == 'guitar' %}
+                                        <p class="training-instrument">Guitare électrique</p>
+                                    {% endif %}
+
+                                    <p class="training-price">{{ lessonspack.price }}€</p>
+
+                                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" class="training-image" alt="{{ lessonspack.title }}">
+
+                                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn training-button">
+                                        Voir le pack
+                                    </a>
+
+                                    {# Button add to cart #}
+                                    <form action="{{ path('app_cart', { type: 'pack', id: lessonspack.id }) }}" method="post" class="training-cart-form">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn training-button">Ajouter au panier</button>
+                                    </form>
+                                </div>
+                            </article>
                         {% endif %}
-                    {{ lessonspack.price }}€ <br>
-                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
-                    {# Button add to cart #}
-                    <form action="{{ path('app_cart', { type: 'pack', id: lessonspack.id }) }}" method="post">
-                        <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                    </form>
-                    <br>
-                {% endif %}
-            {% endfor %}
+                    {% endfor %}
+                </div>
 
-                <h2>Les leçons : </h2>
-                {% for lesson in lessons %}
-                    {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
-                        {{ lesson.title }} <br>
-                            {% if lesson.instrument == 'bass' %}
-                                Basse électrique <br>
-                            {% elseif lesson.instrument == 'guitar' %}
-                                Guitare électrique <br>
-                            {% endif %}
-                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                        {{ lesson.price }}€ <br>
-                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
-                        {# Button add to cart #}
-                        <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                        </form>
-                        <br>
-                    {% endif %}
-                {% endfor %}
+                <h2>Les leçons :</h2>
+                <div class="training-list">
+                    {% for lesson in lessons %}
+                        {% if lesson.id not in purchasedLessonIds and lesson.id not in purchasedLessonsInPacksIds %}
+                            <article class="training-card">
+                                <div class="training-card-body">
+                                    <h3 class="training-card-title">{{ lesson.title }}</h3>
 
+                                    {% if lesson.instrument == 'bass' %}
+                                        <p class="training-instrument">Basse électrique</p>
+                                    {% elseif lesson.instrument == 'guitar' %}
+                                        <p class="training-instrument">Guitare électrique</p>
+                                    {% endif %}
 
+                                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" class="training-image" alt="{{ lesson.title }}">
 
+                                    <p class="training-price">{{ lesson.price }}€</p>
 
+                                    <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn training-button">
+                                        Voir la leçon
+                                    </a>
+
+                                    {# Button add to cart #}
+                                    <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post" class="training-cart-form">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn training-button">Ajouter au panier</button>
+                                    </form>
+                                </div>
+                            </article>
+                        {% endif %}
+                    {% endfor %}
+                </div>
 
             {% else %}
             {# Logged-in user, but email not verified #}
-            <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+            <div class="training-notice">
+                <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+            </div>
 
-                <h2>Les packs : </h2>
-                {% for lessonspack in lessonspacks %}
-                    {{ lessonspack.title }} <br>
-                        {% if lessonspack.instrument == 'bass' %}
-                            Basse électrique <br>
-                        {% elseif lessonspack.instrument == 'guitar' %}
-                            Guitare électrique <br>
-                        {% endif %}
-                    {{ lessonspack.price }}€ <br>
-                    <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                    <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
-                    <br>
-                {% endfor %}
+                <h2>Les packs :</h2>
+                <div class="training-list">
+                    {% for lessonspack in lessonspacks %}
+                        <article class="training-card">
+                            <div class="training-card-body">
+                                <h3 class="training-card-title">{{ lessonspack.title }}</h3>
 
-                <h2>Les leçons : </h2>
+                                {% if lessonspack.instrument == 'bass' %}
+                                    <p class="training-instrument">Basse électrique</p>
+                                {% elseif lessonspack.instrument == 'guitar' %}
+                                    <p class="training-instrument">Guitare électrique</p>
+                                {% endif %}
+
+                                <p class="training-price">{{ lessonspack.price }}€</p>
+
+                                <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" class="training-image" alt="{{ lessonspack.title }}">
+
+                                <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn training-button">
+                                    Voir le pack
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                <h2>Les leçons :</h2>
+                <div class="training-list">
                     {% for lesson in lessons %}
-                        {{ lesson.title }} <br>
-                            {% if lesson.instrument == 'bass' %}
-                                Basse électrique <br>
-                            {% elseif lesson.instrument == 'guitar' %}
-                                Guitare électrique <br>
-                            {% endif %}
-                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                        {{ lesson.price }}€ <br>
-                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
-                        <br>
-                {% endfor %}
+                        <article class="training-card">
+                            <div class="training-card-body">
+                                <h3 class="training-card-title">{{ lesson.title }}</h3>
 
+                                {% if lesson.instrument == 'bass' %}
+                                    <p class="training-instrument">Basse électrique</p>
+                                {% elseif lesson.instrument == 'guitar' %}
+                                    <p class="training-instrument">Guitare électrique</p>
+                                {% endif %}
 
+                                <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" class="training-image" alt="{{ lesson.title }}">
 
+                                <p class="training-price">{{ lesson.price }}€</p>
 
+                                <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn training-button">
+                                    Voir la leçon
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
 
             {% endif %}
         {% endif %}
     {% else %}
     {# Not logged in #}
-    <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
-    <a href="{{ path('app_login') }}">Se Connecter</a>-<a href="{{ path('app_register') }}">Créer un comtpe</a><br>
+    <div class="training-notice">
+        <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+        <a href="{{ path('app_login') }}">Se Connecter</a> -
+        <a href="{{ path('app_register') }}">Créer un comtpe</a>
+    </div>
 
+        <h2>Les packs :</h2>
+        <div class="training-list">
+            {% for lessonspack in lessonspacks %}
+                <article class="training-card">
+                    <div class="training-card-body">
+                        <h3 class="training-card-title">{{ lessonspack.title }}</h3>
 
-        <h2>Les packs : </h2>
-        {% for lessonspack in lessonspacks %}
-            {{ lessonspack.title }} <br>
-                {% if lessonspack.instrument == 'bass' %}
-                    Basse électrique <br>
-                {% elseif lessonspack.instrument == 'guitar' %}
-                    Guitare électrique <br>
-                {% endif %}
-            {{ lessonspack.price }}€ <br>
-            <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-            <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn btn-primary">Voir le pack</a><br>
-            <br>
-        {% endfor %}
+                        {% if lessonspack.instrument == 'bass' %}
+                            <p class="training-instrument">Basse électrique</p>
+                        {% elseif lessonspack.instrument == 'guitar' %}
+                            <p class="training-instrument">Guitare électrique</p>
+                        {% endif %}
 
-        <h2>Les leçons : </h2>
+                        <p class="training-price">{{ lessonspack.price }}€</p>
+
+                        <img src="{{ asset('uploads/lessons/' ~ lessonspack.image) }}" class="training-image" alt="{{ lessonspack.title }}">
+
+                        <a href="{{ path('app_training_details', {type: 'pack', id: lessonspack.id}) }}" class="btn training-button">
+                            Voir le pack
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <h2>Les leçons :</h2>
+        <div class="training-list">
             {% for lesson in lessons %}
-                {{ lesson.title }} <br>
-                    {% if lesson.instrument == 'bass' %}
-                        Basse électrique <br>
-                    {% elseif lesson.instrument == 'guitar' %}
-                        Guitare électrique <br>
-                    {% endif %}
-                <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                {{ lesson.price }}€ <br>
-                <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn btn-primary">Voir la leçon</a><br>
-                <br>
-        {% endfor %}
+                <article class="training-card">
+                    <div class="training-card-body">
+                        <h3 class="training-card-title">{{ lesson.title }}</h3>
+
+                        {% if lesson.instrument == 'bass' %}
+                            <p class="training-instrument">Basse électrique</p>
+                        {% elseif lesson.instrument == 'guitar' %}
+                            <p class="training-instrument">Guitare électrique</p>
+                        {% endif %}
+
+                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" class="training-image" alt="{{ lesson.title }}">
+
+                        <p class="training-price">{{ lesson.price }}€</p>
+
+                        <a href="{{ path('app_training_details', {type: 'lesson', id: lesson.id}) }}" class="btn training-button">
+                            Voir la leçon
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
 
     {% endif %}
+
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .training-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .training-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem 1.5rem;
+            margin: 0 0 3rem;
+            padding: 1.25rem 1.5rem;
+            background-color: #FBF6EF;
+            border-left: 5px solid #D6A756;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+        }
+
+        .training-filters label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .training-filters input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #B23A2F;
+            cursor: pointer;
+        }
+
+        .training-filters br {
+            display: none;
+        }
+
+        .training-page > h2 {
+            width: fit-content;
+            margin: 2.5rem 0 1.5rem;
+            padding-bottom: 0.4rem;
+            color: #2E1F1A;
+            border-bottom: 3px solid #D6A756;
+        }
+
+        .training-page > h3,
+        .training-notice h3 {
+            color: #B23A2F;
+        }
+
+        .training-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .training-card {
+            height: 100%;
+            overflow: hidden;
+            background-color: #FBF6EF;
+            border: 0;
+            border-top: 4px solid #D6A756;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .training-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(46, 31, 26, 0.14);
+        }
+
+        .training-card-body {
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem;
+        }
+
+        .training-card-title {
+            margin: 0 0 0.75rem;
+            color: #B23A2F;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .training-instrument {
+            margin-bottom: 0.5rem;
+            color: #66544B;
+        }
+
+        .training-price {
+            margin: 0.75rem 0;
+            color: #2E1F1A;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .training-image {
+            display: block;
+            width: 100%;
+            height: 190px;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
+            object-fit: contain;
+            background-color: #F3E9DC;
+            border-radius: 0.5rem;
+        }
+
+        .training-button {
+            margin: 0.3rem 0;
+            color: #2E1F1A;
+            background-color: #D6A756;
+            border: 1px solid #D6A756;
+            font-weight: 600;
+        }
+
+        .training-button:hover,
+        .training-button:focus {
+            color: #F3E9DC;
+            background-color: #2E1F1A;
+            border-color: #2E1F1A;
+        }
+
+        .training-cart-form {
+            margin-top: 0.5rem;
+        }
+
+        .training-notice {
+            margin: 1rem 0 2rem;
+            padding: 1.25rem;
+            background-color: #FBF6EF;
+            border-left: 5px solid #D6A756;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+        }
+
+        .training-notice a {
+            color: #B23A2F;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .training-notice a:hover {
+            color: #7D261F;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .training-page {
+                padding: 1.25rem 1rem 3rem;
+            }
+
+            .training-filters {
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+
+            .training-card-body {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+{% endblock %}

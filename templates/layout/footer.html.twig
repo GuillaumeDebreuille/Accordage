@@ -1,42 +1,94 @@
-<div class="footer-zone">
-    <br>  {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-    {% if app.user %}
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-        {# Admin display #}
-        <h3>Admin !</h3>
-        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-block footer-about">
+            <span class="footer-brand">Accordage</span>
+            <p>Un espace pour apprendre, jouer et partager la musique.</p>
+        </div>
 
+        <div class="footer-block">
+            <h3>Une question ?</h3>
+            <a href="mailto:contact@monsite.fr">Nous écrire</a>
+        </div>
 
-        {% else %}
-            {% if app.user.verified %}
-            {# Logged-in user, email verified #}
-            <h3>Connecté et mail vérifié</h3>
-            <a href="{{ path('app_logout') }}">Se déconnecter</a>
+        <div class="footer-block">
+            <h3>La musique, ensemble</h3>
+            <p>Merci de faire partie de l’aventure.</p>
+        </div>
 
-
-            {% else %}
-            {# Logged-in user, but email not verified #}
-            <h3>Connecté et mail non vérifié</h3>
-            <a href="{{ path('app_logout') }}">Se déconnecter</a>
-
-
-            {% endif %}
-        {% endif %}
-    {% else %}
-    {# Not logged in #}
-    <h3>non connecté !</h3>
-
-
-    {% endif %}
-<br><br><br> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-</div>
-
+        <div class="footer-block footer-copy">
+            <p>© {{ "now"|date("Y") }} Accordage</p>
+            <a href="#top">Retour en haut ↑</a>
+        </div>
+    </div>
+</footer>
 
 <style>
-.footer-zone {
-    background-color: #d5c8c8;
-}  
-body {
-    margin: 0;
-}
+    /* Footer layout and colors */
+    .site-footer {
+        margin-top: 60px;
+        padding: 38px 8%;
+        background: #2E1F1A;
+        color: #F3E9DC;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Footer headings and text */
+    .footer-block h3 {
+        margin: 0 0 10px;
+        font-size: 0.95rem;
+    }
+
+    .footer-block p {
+        margin: 8px 0 0;
+        color: #D4C3B2;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    /* Brand name */
+    .footer-brand {
+        color: #D6A756;
+        font-size: 1.15rem;
+        font-weight: 600;
+    }
+
+    /* Footer links */
+    .footer-block a {
+        color: #F3E9DC;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .footer-block a:hover {
+        text-decoration: underline;
+    }
+
+    /* Copyright section */
+    .footer-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 700px) {
+        .footer-content {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 450px) {
+        .footer-content {
+            grid-template-columns: 1fr;
+            gap: 22px;
+        }
+    }
 </style>

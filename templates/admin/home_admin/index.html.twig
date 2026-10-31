@@ -1,9 +1,38 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
-<a href="{{ path('app_products_admin') }}">Gestion des produits</a>
-<a href="{{ path('app_trainings_admin') }}">Gestion des leçons et des packs</a>
-<a href="{{ path('app_users_admin') }}">Gestion des utilisateurs</a>
+{% block title %}Administration{% endblock %}
 
+{% block body %}
+    <div class="admin-buttons">
+        <a href="{{ path('app_products_admin') }}">Gestion des produits</a>
+        <a href="{{ path('app_trainings_admin') }}">Gestion des leçons et des packs</a>
+        <a href="{{ path('app_users_admin') }}">Gestion des utilisateurs</a>
+    </div>
 
+    <style>
+        .admin-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            padding: 60px 20px;
+        }
 
-{% include 'layout/footer.html.twig' %}
+        .admin-buttons a {
+            padding: 16px 24px;
+            border: 1px solid #e5d5c3;
+            border-radius: 10px;
+            background: #fffaf4;
+            color: #2E1F1A;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 6px 16px rgba(46, 31, 26, 0.1);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .admin-buttons a:hover {
+            transform: translateY(-3px);
+            background: #F3E9DC;
+        }
+    </style>
+{% endblock %}

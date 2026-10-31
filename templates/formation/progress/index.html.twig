@@ -1,14 +1,176 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
-<h1>Mes succès</h1>
+{% block title %}
+    Mes succès
+{% endblock %}
 
-{% for progress in progresses %}
-    {{ progress.lesson.title }} - terminée le {{ progress.createdAt|date('d/m/Y') }}
-    <form method="post" action="{{ path('app_progress_delete', { id: progress.id }) }}" style="display:inline;">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete_progress_' ~ progress.id) }}">
-        <button type="submit">Retirer des succès</button>
-    </form>
-    <br>
-{% else %}
-    <p>Aucune leçon terminée pour le moment.</p>
-{% endfor %}
+{% block body %}
+    <main class="success-page">
+        <h1>Mes succès</h1>
+
+        {% if progresses is not empty %}
+            <div class="success-list">
+                {% for progress in progresses %}
+                    <article class="success-card">
+                        {# Lesson image #}
+                        {% if progress.lesson.images %}
+                            <img
+                                class="success-image"
+                                src="{{ asset('uploads/lessons/' ~ progress.lesson.images) }}"
+                                alt="Image de {{ progress.lesson.title }}"
+                            >
+                        {% endif %}
+
+                        {# Lesson details #}
+                        <div class="success-details">
+                            <h2>{{ progress.lesson.title }}</h2>
+                            <p>
+                                Terminée le
+                                {{ progress.createdAt|date('d/m/Y') }}
+                            </p>
+                        </div>
+
+                        {# Remove progress button #}
+                        <form
+                            class="success-delete-form"
+                            method="post"
+                            action="{{ path('app_progress_delete', { id: progress.id }) }}"
+                            onsubmit="return confirm('Retirer cette leçon de vos succès ?');"
+                        >
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_progress_' ~ progress.id) }}">
+
+                            <button class="success-delete-button" type="submit">
+                                Retirer des succès
+                            </button>
+                        </form>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">
+                Aucune leçon terminée pour le moment.
+            </p>
+        {% endif %}
+    </main>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        /* Page layout */
+        .success-page {
+            width: min(900px, 92%);
+            margin: 40px auto;
+        }
+
+        .success-page h1 {
+            margin-bottom: 24px;
+            color: #1f2937;
+        }
+
+        /* Success list */
+        .success-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Success card */
+        .success-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Lesson image */
+        .success-image {
+            width: 100px;
+            height: 80px;
+            flex: 0 0 100px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f3f4f6;
+        }
+
+        /* Lesson details */
+        .success-details {
+            flex: 1;
+        }
+
+        .success-details h2 {
+            margin: 0 0 6px;
+            color: #374151;
+            font-size: 1.2rem;
+        }
+
+        .success-details p {
+            margin: 0;
+            color: #6b7280;
+        }
+
+        /* Delete button */
+        .success-delete-form {
+            margin: 0;
+        }
+
+        .success-delete-button {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            color: #333;
+            font: inherit;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .success-delete-button:hover {
+            background: #f3f3f3;
+        }
+
+        /* Empty state */
+        .empty-message {
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9fafb;
+            color: #6b7280;
+        }
+
+        /* Mobile layout */
+        @media (max-width: 600px) {
+            .success-page {
+                margin: 24px auto;
+            }
+
+            .success-card {
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .success-image {
+                width: 80px;
+                height: 70px;
+                flex-basis: 80px;
+            }
+
+            .success-details {
+                min-width: 0;
+            }
+
+            .success-delete-form {
+                width: 100%;
+            }
+
+            .success-delete-button {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}

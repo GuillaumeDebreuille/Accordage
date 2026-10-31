@@ -1,11 +1,124 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
+{% block title %}
+    Mes leçons
+{% endblock %}
 
-{% for lesson in lessons %}
-    id : {{ lesson.id }} <br>
-    name : {{ lesson.title }} <br>
-    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-    description : {{ lesson.description }} <br>
-    <a href="{{ path('app_course_details', { id: lesson.id }) }}">Voir la leçon</a>
-    <br><br>
-{% endfor %}
+{% block body %}
+
+<div class="my-lessons-page">
+    <h1 class="my-lessons-title">Mes leçons</h1>
+
+    <div class="my-lessons-list">
+        {% for lesson in lessons %}
+            <article class="my-lesson-card">
+                <h2 class="my-lesson-name">{{ lesson.title }}</h2>
+
+                <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" class="my-lesson-image" alt="{{ lesson.title }}">
+
+                <p class="my-lesson-description">{{ lesson.description }}</p>
+
+                <a
+                    class="my-lesson-button" href="{{ path('app_course_details', { id: lesson.id }) }}">
+                    Voir la leçon
+                </a>
+            </article>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .my-lessons-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem 4rem;
+        }
+
+        .my-lessons-title {
+            margin: 0 0 2rem;
+            color: #2E1F1A;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .my-lessons-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .my-lesson-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem;
+            background-color: #fff;
+            border: 1px solid #E7D8C5;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(46, 31, 26, 0.08);
+        }
+
+        .my-lesson-id {
+            margin: 0 0 0.5rem;
+            color: #66544B;
+            font-size: 0.9rem;
+        }
+
+        .my-lesson-name {
+            margin: 0 0 1rem;
+            color: #B23A2F;
+            font-size: 1.35rem;
+        }
+
+        .my-lesson-image {
+            width: 100%;
+            height: 180px;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            object-fit: contain;
+            background-color: #F3E9DC;
+            border-radius: 0.5rem;
+        }
+
+        .my-lesson-description {
+            flex-grow: 1;
+            color: #2E1F1A;
+            line-height: 1.6;
+        }
+
+        .my-lesson-button {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.65rem 1rem;
+            color: #2E1F1A;
+            background-color: #D6A756;
+            border: 1px solid #D6A756;
+            border-radius: 0.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .my-lesson-button:hover,
+        .my-lesson-button:focus {
+            color: #F3E9DC;
+            background-color: #2E1F1A;
+            border-color: #2E1F1A;
+        }
+
+        @media (max-width: 576px) {
+            .my-lessons-page {
+                padding: 1.25rem 1rem 3rem;
+            }
+
+            .my-lesson-card {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+{% endblock %}

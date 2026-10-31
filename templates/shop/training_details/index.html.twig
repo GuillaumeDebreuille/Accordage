@@ -1,187 +1,335 @@
-{% include 'layout/header.html.twig' %}
+{% extends 'base.html.twig' %}
 
-
+{% block body %}
+<div class="training-detail-page">
 
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
-{# ------------------ Admin ------------------ #}
-        <h3>Admin !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+            <h3 class="detail-status">Admin !</h3>
 
             {% if type == 'lesson' %}
+                <article class="detail-card">
+                    <p class="detail-id">ID : {{ lesson.id }}</p>
+                    <h1 class="detail-title">{{ lesson.title }}</h1>
+                    <img
+                        src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                        class="detail-image"
+                        alt="{{ lesson.title }}"
+                    >
+                    <p class="detail-description">{{ lesson.description }}</p>
+                    <p class="detail-price">{{ lesson.price }}€</p>
 
-                id : {{ lesson.id }} <br>
-                name : {{ lesson.title }} <br>
-                <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                description : {{ lesson.description }} <br>
-                prix : {{ lesson.price }}€ <br>
-                {# Button add to cart #}
-                <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                </form>
-                <br>
+                    {# Add lesson to cart #}
+                    <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn detail-button">Ajouter au panier</button>
+                    </form>
+                </article>
 
             {% elseif type == 'pack' %}
+                <article class="detail-card">
+                    <h1 class="detail-title">{{ pack.title }}</h1>
+                    <img
+                        src="{{ asset('uploads/lessons/' ~ pack.image) }}"
+                        class="detail-image"
+                        alt="{{ pack.title }}"
+                    >
+                    <p class="detail-instrument">{{ pack.instrument }}</p>
+                    <p class="detail-description">{{ pack.description }}</p>
 
-                {{ pack.title }}
-                <img src="{{ asset('uploads/lessons/' ~ pack.image) }}" style="width:120px; height:120px; object-fit:contain;">
-                {{ pack.instrument }}
-                {{ pack.description }}
+                    <div class="pack-lessons">
+                        <p class="pack-lessons-intro">Ce pack contient les leçons suivantes :</p>
 
-                <br>
-                {% for lesson in lessons %}
-                    {{ lesson.title }}
-                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;">
-                    {{ lesson.description }}                        <br>
+                        {% for lesson in lessons %}
+                            <article class="pack-lesson">
+                                <h2 class="pack-lesson-title">{{ lesson.title }}</h2>
+                                <img
+                                    src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                                    class="pack-lesson-image"
+                                    alt="{{ lesson.title }}"
+                                >
+                                <p>{{ lesson.description }}</p>
+                            </article>
+                        {% else %}
+                            <p class="empty-pack">Aucune leçon dans ce pack pour le moment.</p>
+                        {% endfor %}
+                    </div>
 
-                {% else %}
-                    <li>Aucune leçon dans ce pack pour le moment.</li>
-                {% endfor %}
+                    <p class="detail-price">{{ pack.price }}€</p>
 
-                {{ pack.price }}
-                {# Button add to cart #}
-                <form action="{{ path('app_cart', { type: 'pack', id: pack.id }) }}" method="post">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="btn btn-primary">Ajouter le pack au panier</button>
-                </form>
-
+                    {# Add pack to cart #}
+                    <form action="{{ path('app_cart', { type: 'pack', id: pack.id }) }}" method="post">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn detail-button">Ajouter le pack au panier</button>
+                    </form>
+                </article>
             {% endif %}
-
-
-
 
         {% else %}
             {% if app.user.verified %}
-{# ------------------ Logged-in user, email verified ------------------ #}
-            <h3>Connecté et mail vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+                <h3 class="detail-status">Connecté et mail vérifié</h3>
 
                 {% if type == 'lesson' %}
+                    <article class="detail-card">
+                        <p class="detail-id">ID : {{ lesson.id }}</p>
+                        <h1 class="detail-title">{{ lesson.title }}</h1>
+                        <img
+                            src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                            class="detail-image"
+                            alt="{{ lesson.title }}"
+                        >
+                        <p class="detail-description">{{ lesson.description }}</p>
+                        <p class="detail-price">{{ lesson.price }}€</p>
 
-                    id : {{ lesson.id }} <br>
-                    name : {{ lesson.title }} <br>
-                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                    description : {{ lesson.description }} <br>
-                    prix : {{ lesson.price }}€ <br>
-                    {# Button add to cart #}
-                    <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
-                        <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-                    </form>
-                    <br>
+                        {# Add lesson to cart #}
+                        <form action="{{ path('app_cart', { type: 'lesson', id: lesson.id }) }}" method="post">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn detail-button">Ajouter au panier</button>
+                        </form>
+                    </article>
 
                 {% elseif type == 'pack' %}
+                    <article class="detail-card">
+                        <h1 class="detail-title">{{ pack.title }}</h1>
+                        <img
+                            src="{{ asset('uploads/lessons/' ~ pack.image) }}"
+                            class="detail-image"
+                            alt="{{ pack.title }}"
+                        >
+                        <p class="detail-instrument">{{ pack.instrument }}</p>
+                        <p class="detail-description">{{ pack.description }}</p>
 
-                    {{ pack.title }}
-                    <img src="{{ asset('uploads/lessons/' ~ pack.image) }}" style="width:120px; height:120px; object-fit:contain;">
-                    {{ pack.instrument }}
-                    {{ pack.description }}
+                        <div class="pack-lessons">
+                            <p class="pack-lessons-intro">Ce pack contient les leçons suivantes :</p>
 
-                    <br>
-                    {% for lesson in lessons %}
-                        {{ lesson.title }}
-                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;">
-                        {{ lesson.description }}
-                        <br>
+                            {% for lesson in lessons %}
+                                <article class="pack-lesson">
+                                    <h2 class="pack-lesson-title">{{ lesson.title }}</h2>
+                                    <img
+                                        src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                                        class="pack-lesson-image"
+                                        alt="{{ lesson.title }}"
+                                    >
+                                    <p>{{ lesson.description }}</p>
+                                </article>
+                            {% else %}
+                                <p class="empty-pack">Aucune leçon dans ce pack pour le moment.</p>
+                            {% endfor %}
+                        </div>
 
-                    {% else %}
-                        <li>Aucune leçon dans ce pack pour le moment.</li>
-                    {% endfor %}
+                        <p class="detail-price">{{ pack.price }}€</p>
 
-                    {{ pack.price }}
-                    {# Button add to cart #}
-                    <form action="{{ path('app_cart', { type: 'pack', id: pack.id }) }}" method="post">
-                        <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn btn-primary">Ajouter le pack au panier</button>
-                    </form>
-
+                        {# Add pack to cart #}
+                        <form action="{{ path('app_cart', { type: 'pack', id: pack.id }) }}" method="post">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn detail-button">Ajouter le pack au panier</button>
+                        </form>
+                    </article>
                 {% endif %}
-
-
-
 
             {% else %}
-{# ------------------ Logged-in user, but email not verified ------------------ #}
-            <h3>Connecté et mail non vérifié</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-            <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+                <h3 class="detail-status">Connecté et mail non vérifié</h3>
+                <div class="detail-notice">
+                    <h3>Pour acheter un pack ou une leçon, merci de vérifier votre adresse mail.</h3>
+                </div>
 
                 {% if type == 'lesson' %}
-
-                    id : {{ lesson.id }} <br>
-                    name : {{ lesson.title }} <br>
-                    <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-                    description : {{ lesson.description }} <br>
-                    prix : {{ lesson.price }}€ <br>
-                    {# Button add to cart #}
-                    <br>
+                    <article class="detail-card">
+                        <p class="detail-id">ID : {{ lesson.id }}</p>
+                        <h1 class="detail-title">{{ lesson.title }}</h1>
+                        <img
+                            src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                            class="detail-image"
+                            alt="{{ lesson.title }}"
+                        >
+                        <p class="detail-description">{{ lesson.description }}</p>
+                        <p class="detail-price">{{ lesson.price }}€</p>
+                    </article>
 
                 {% elseif type == 'pack' %}
+                    <article class="detail-card">
+                        <h1 class="detail-title">{{ pack.title }}</h1>
+                        <img
+                            src="{{ asset('uploads/lessons/' ~ pack.image) }}"
+                            class="detail-image"
+                            alt="{{ pack.title }}"
+                        >
+                        <p class="detail-instrument">{{ pack.instrument }}</p>
+                        <p class="detail-description">{{ pack.description }}</p>
 
-                    {{ pack.title }}
-                    <img src="{{ asset('uploads/lessons/' ~ pack.image) }}" style="width:120px; height:120px; object-fit:contain;">
-                    {{ pack.instrument }}
-                    {{ pack.description }}
+                        <div class="pack-lessons">
+                            <p class="pack-lessons-intro">Ce pack contient les leçons suivantes :</p>
 
-                    <br>
-                    {% for lesson in lessons %}
-                        {{ lesson.title }}
-                        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;">
-                        {{ lesson.description }}
-                        <br>
+                            {% for lesson in lessons %}
+                                <article class="pack-lesson">
+                                    <h2 class="pack-lesson-title">{{ lesson.title }}</h2>
+                                    <img
+                                        src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                                        class="pack-lesson-image"
+                                        alt="{{ lesson.title }}"
+                                    >
+                                    <p>{{ lesson.description }}</p>
+                                </article>
+                            {% else %}
+                                <p class="empty-pack">Aucune leçon dans ce pack pour le moment.</p>
+                            {% endfor %}
+                        </div>
 
-                    {% else %}
-                        <li>Aucune leçon dans ce pack pour le moment.</li>
-                    {% endfor %}
-
-                    {{ pack.price }}
-
+                        <p class="detail-price">{{ pack.price }}€</p>
+                    </article>
                 {% endif %}
-
-
-
-
-
             {% endif %}
         {% endif %}
+
     {% else %}
-{# ------------------ Not logged in ------------------ #}
-    <h3>non connecté !</h3> {# A RETIRER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
-    <h3>Pour acheter un pack ou une leçon, merci de vous identifier</h3>
+        <h3 class="detail-status">Non connecté !</h3>
+        <div class="detail-notice">
+            <h3>Pour acheter un pack ou une leçon, merci de vous identifier.</h3>
+        </div>
 
-    {% if type == 'lesson' %}
+        {% if type == 'lesson' %}
+            <article class="detail-card">
+                <p class="detail-id">ID : {{ lesson.id }}</p>
+                <h1 class="detail-title">{{ lesson.title }}</h1>
+                <img
+                    src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                    class="detail-image"
+                    alt="{{ lesson.title }}"
+                >
+                <p class="detail-description">{{ lesson.description }}</p>
+                <p class="detail-price">{{ lesson.price }}€</p>
+            </article>
 
-        id : {{ lesson.id }} <br>
-        name : {{ lesson.title }} <br>
-        <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;"><br>
-        description : {{ lesson.description }} <br>
-        prix : {{ lesson.price }}€ <br>
-        <br>
+        {% elseif type == 'pack' %}
+            <article class="detail-card">
+                <h1 class="detail-title">{{ pack.title }}</h1>
+                <img
+                    src="{{ asset('uploads/lessons/' ~ pack.image) }}"
+                    class="detail-image"
+                    alt="{{ pack.title }}"
+                >
+                <p class="detail-instrument">{{ pack.instrument }}</p>
+                <p class="detail-description">{{ pack.description }}</p>
 
-    {% elseif type == 'pack' %}
+                <div class="pack-lessons">
+                    <p class="pack-lessons-intro">Ce pack contient les leçons suivantes :</p>
 
-        {{ pack.title }}
-        <img src="{{ asset('uploads/lessons/' ~ pack.image) }}" style="width:120px; height:120px; object-fit:contain;">
-        {{ pack.instrument }}
-        {{ pack.description }}
+                    {% for lesson in lessons %}
+                        <article class="pack-lesson">
+                            <h2 class="pack-lesson-title">{{ lesson.title }}</h2>
+                            <img
+                                src="{{ asset('uploads/lessons/' ~ lesson.images) }}"
+                                class="pack-lesson-image"
+                                alt="{{ lesson.title }}"
+                            >
+                            <p>{{ lesson.description }}</p>
+                        </article>
+                    {% else %}
+                        <p class="empty-pack">Aucune leçon dans ce pack pour le moment.</p>
+                    {% endfor %}
+                </div>
 
-        <br>
-        {% for lesson in lessons %}
-            {{ lesson.title }}
-            <img src="{{ asset('uploads/lessons/' ~ lesson.images) }}" style="width:120px; height:120px; object-fit:contain;">
-            {{ lesson.description }}
-            <br>
-
-        {% else %}
-            <li>Aucune leçon dans ce pack pour le moment.</li>
-        {% endfor %}
-
-        {{ pack.price }}
-
+                <p class="detail-price">{{ pack.price }}€</p>
+            </article>
+        {% endif %}
     {% endif %}
 
+</div>
+{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
 
+    <style>
+        /* Main detail card */
+        .detail-card {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #FBF6EF;
+            border-top: 4px solid #D6A756;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px #2E1F1A1A;
+            text-align: center;
+        }
 
+        /* Main lesson or pack image */
+        .detail-image {
+            display: block;
+            width: 100%;
+            max-width: 220px;
+            height: 220px;
+            margin: 1rem auto;
+            object-fit: contain;
+        }
 
-    {% endif %}
+        /* Lessons displayed inside a pack */
+        .pack-lessons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
 
+        .pack-lessons-intro {
+            grid-column: 1 / -1;
+            margin: 0;
+            font-weight: 600;
+        }
 
+        /* Individual lesson card */
+        .pack-lesson {
+            min-width: 0;
+            padding: 1rem;
+            background: #F3E9DC;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Lesson image inside a pack */
+        .pack-lesson-image {
+            display: block;
+            width: 100%;
+            max-width: 220px;
+            height: 150px;
+            margin: 0.75rem auto;
+            object-fit: contain;
+        }
+
+        /* Price and add-to-cart button */
+        .detail-price {
+            font-weight: 700;
+        }
+
+        .detail-card form {
+            margin-top: 1rem;
+        }
+
+        .detail-button {
+            padding: 0.6rem 1rem;
+            color: #2E1F1A;
+            background: #D6A756;
+            border: 0;
+            border-radius: 4px;
+        }
+
+        .detail-button:hover {
+            background: #C59643;
+        }
+
+        /* Status and verification notices */
+        .detail-status,
+        .detail-notice {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            text-align: center;
+        }
+
+        .detail-notice {
+            padding: 1rem;
+            background: #FBF6EF;
+            border-left: 4px solid #D6A756;
+            border-radius: 6px;
+        }
+    </style>
+{% endblock %}
